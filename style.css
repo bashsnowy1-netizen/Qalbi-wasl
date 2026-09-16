@@ -1033,3 +1033,26 @@ input:focus-visible {
   }
 
 }
+/* =========================================================
+   QUR'AN READER — FONT SIZE FIX
+   ========================================================= */
+
+.arabic-text {
+  font-size: clamp(25px, 7vw, 34px) !important;
+  line-height: 2.05 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Keep the translation comfortably smaller */
+.translation {
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+
+/* Mobile screens */
+@media (max-width: 390px) {
+  .arabic-text {
+    font-size: clamp(23px, 6.5vw, 30px) !important;
+    line-height: 2 !important;
+  }
+}
