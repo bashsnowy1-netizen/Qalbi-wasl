@@ -1,1136 +1,676 @@
 /* =========================================================
-   QALBI WASL — RECITATION ENGINE
-   Original procedural live wallpapers
+   QALBI WASL
+   FINAL FRONTEND ENGINE
+   ========================================================= */
+
+
+/* =========================================================
+   APP STATE
    ========================================================= */
 
 const state = {
+
+  /* Reading */
+  currentSurah: 1,
+  currentAyah: 1,
+  totalAyahs: 7,
+
+  /* Appearance */
+  theme: "night",
   environment: "rain",
-  motionSpeed: 0.9,
-  blur: 8,
+  blur: 3,
   fontScale: 100,
-  playing: false,
-  bookmarked: false,
+
+  /* Motion */
+  motionSpeed: 0.9,
   syncWithRecitation: true,
+
+  /* Reading preferences */
+  showTransliteration: false,
+
+  /* Audio */
+  playing: false,
+  muted: false,
+  shuffle: false,
+
+  /* User */
+  bookmarked: false,
+
+  /* Reciter */
   reciter: "Abdurrahman ibn Musad"
+
 };
 
 
 /* =========================================================
-   ELEMENTS
+   DOM HELPERS
    ========================================================= */
 
-const background = document.getElementById("liveBackground");
-const playButton = document.getElementById("playButton");
-const bookmarkButton = document.getElementById("bookmarkButton");
-
-const arabicText = document.getElementById("arabicText");
-const fontSizeLabel = document.getElementById("fontSizeLabel");
-
-const environmentName = document.getElementById("environmentName");
-
-const textModal = document.getElementById("textModal");
-const reciterModal = document.getElementById("reciterModal");
-
-const blurSlider = document.getElementById("blurSlider");
-const arabicSizeSlider = document.getElementById("arabicSizeSlider");
-
-const currentTimeElement = document.getElementById("currentTime");
-const audioProgress = document.getElementById("audioProgress");
+const $ = (id) =>
+  document.getElementById(id);
 
 
 /* =========================================================
-   CANVAS
+   MAIN ELEMENTS
    ========================================================= */
 
-const canvas = document.createElement("canvas");
+const background =
+  $("liveBackground");
 
-canvas.id = "liveWallpaperCanvas";
+const backgroundOverlay =
+  $("backgroundOverlay");
 
-canvas.style.position = "fixed";
-canvas.style.inset = "0";
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-canvas.style.zIndex = "-1";
-canvas.style.pointerEvents = "none";
+const arabicText =
+  $("arabicText");
 
-background.innerHTML = "";
-background.appendChild(canvas);
+const translationText =
+  $("translationText");
 
-const ctx = canvas.getContext("2d");
+const transliterationText =
+  $("transliterationText");
 
-let width = 0;
-let height = 0;
-let animationFrame = null;
-let lastFrame = performance.now();
+const surahName =
+  $("surahName");
 
-function resizeCanvas() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+const readerSurahName =
+  $("readerSurahName");
 
-  width = window.innerWidth;
-  height = window.innerHeight;
+const ayahCounter =
+  $("ayahCounter");
 
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
+const readerAyahCount =
+  $("readerAyahCount");
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
+const ayahNumber =
+  $("ayahNumber");
 
-window.addEventListener("resize", resizeCanvas);
+const ayahLocation =
+  $("ayahLocation");
 
-resizeCanvas();
+const ayahProgressFill =
+  $("ayahProgressFill");
+
+const fontScaleLabel =
+  $("fontScale");
+
+const environmentName =
+  $("environmentName");
+
+const bookmarkButton =
+  $("bookmarkButton");
+
+const themeButton =
+  $("themeButton");
+
+const transliterationToggle =
+  $("transliterationToggle");
 
 
 /* =========================================================
-   UTILITY
+   AUDIO ELEMENTS
    ========================================================= */
 
-function random(min, max) {
-  return Math.random() * (max - min) + min;
-}
+const quranAudio =
+  $("quranAudio");
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
-}
+const audioPlayButton =
+  $("audioPlayButton");
 
-function clearCanvas() {
-  ctx.clearRect(0, 0, width, height);
-}
+const audioProgress =
+  $("audioProgress");
+
+const audioCurrentTime =
+  $("audioCurrentTime");
+
+const audioDuration =
+  $("audioDuration");
+
+const audioPrevious =
+  $("audioPrevious");
+
+const audioNext =
+  $("audioNext");
+
+const audioVolume =
+  $("audioVolume");
+
+const audioShuffle =
+  $("audioShuffle");
+
+const audioMoreButton =
+  $("audioMoreButton");
+
+const audioReciterName =
+  $("audioReciterName");
 
 
 /* =========================================================
-   PARTICLES
+   MODALS
    ========================================================= */
 
-let rainParticles = [];
-let stars = [];
-let birds = [];
-let fireParticles = [];
-let sandParticles = [];
+const textModal =
+  $("textModal");
 
-function createRain() {
-  rainParticles = [];
+const reciterModal =
+  $("reciterModal");
 
-  const count = Math.floor(
-    clamp((width * height) / 11000, 80, 230)
-  );
+const themeModal =
+  $("themeModal");
 
-  for (let i = 0; i < count; i++) {
-    rainParticles.push({
-      x: random(0, width),
-      y: random(0, height),
-      length: random(10, 24),
-      speed: random(500, 850),
-      drift: random(-30, -10)
-    });
-  }
-}
+const audioModal =
+  $("audioModal");
 
-function createStars() {
-  stars = [];
-
-  const count = Math.floor(
-    clamp((width * height) / 9000, 100, 300)
-  );
-
-  for (let i = 0; i < count; i++) {
-    stars.push({
-      x: random(0, width),
-      y: random(0, height * 0.8),
-      radius: random(0.4, 1.8),
-      alpha: random(0.25, 0.9),
-      phase: random(0, Math.PI * 2)
-    });
-  }
-}
-
-function createBirds() {
-  birds = [];
-
-  for (let i = 0; i < 8; i++) {
-    birds.push({
-      x: random(-100, width),
-      y: random(height * 0.15, height * 0.45),
-      speed: random(12, 24),
-      size: random(4, 8),
-      phase: random(0, Math.PI * 2)
-    });
-  }
-}
-
-function createFire() {
-  fireParticles = [];
-
-  for (let i = 0; i < 70; i++) {
-    fireParticles.push({
-      x: random(-45, 45),
-      y: random(-10, 10),
-      size: random(2, 8),
-      speed: random(18, 42),
-      phase: random(0, Math.PI * 2)
-    });
-  }
-}
-
-function createSand() {
-  sandParticles = [];
-
-  for (let i = 0; i < 90; i++) {
-    sandParticles.push({
-      x: random(0, width),
-      y: random(height * 0.45, height),
-      speed: random(4, 12),
-      size: random(1, 3)
-    });
-  }
-}
-
-createRain();
-createStars();
-createBirds();
-createFire();
-createSand();
+const environmentModal =
+  $("environmentModal");
 
 
 /* =========================================================
-   ENVIRONMENT BACKGROUNDS
+   STATUS MESSAGE
    ========================================================= */
 
-function drawGradient(top, bottom) {
-  const gradient = ctx.createLinearGradient(0, 0, 0, height);
-
-  gradient.addColorStop(0, top);
-  gradient.addColorStop(1, bottom);
-
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, width, height);
-}
+const appStatus =
+  $("appStatus");
 
 
-function drawRainEnvironment(time) {
+function showStatus(message) {
 
-  drawGradient(
-    "#243b38",
-    "#07130f"
+  if (!appStatus) return;
+
+  appStatus.textContent =
+    message;
+
+  appStatus.classList.add(
+    "visible"
   );
 
-  // soft forest silhouettes
-  drawForest(time);
-
-  ctx.strokeStyle = "rgba(210,230,225,0.42)";
-  ctx.lineWidth = 1;
-
-  for (const drop of rainParticles) {
-
-    drop.y +=
-      drop.speed *
-      state.motionSpeed *
-      0.001;
-
-    drop.x +=
-      drop.drift *
-      state.motionSpeed *
-      0.001;
-
-    if (drop.y > height + 30) {
-      drop.y = -30;
-      drop.x = random(0, width);
-    }
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-      drop.x,
-      drop.y
-    );
-
-    ctx.lineTo(
-      drop.x - 3,
-      drop.y + drop.length
-    );
-
-    ctx.stroke();
-  }
-}
-
-
-function drawForest(time) {
-
-  const baseY = height * 0.72;
-
-  ctx.fillStyle = "rgba(8,25,20,0.82)";
-
-  ctx.beginPath();
-  ctx.moveTo(0, baseY);
-
-  for (let x = 0; x <= width; x += 50) {
-
-    const treeHeight =
-      80 +
-      Math.sin(x * 0.02) * 40;
-
-    ctx.lineTo(
-      x,
-      baseY - treeHeight
-    );
-  }
-
-  ctx.lineTo(width, height);
-  ctx.lineTo(0, height);
-
-  ctx.closePath();
-
-  ctx.fill();
-}
-
-
-/* =========================================================
-   BIRDS
-   ========================================================= */
-
-function drawBirdEnvironment(time) {
-
-  drawGradient(
-    "#a9c4c0",
-    "#e5d9bd"
+  clearTimeout(
+    showStatus.timeout
   );
 
-  ctx.fillStyle = "rgba(80,95,75,0.45)";
+  showStatus.timeout =
+    setTimeout(() => {
 
-  ctx.fillRect(
-    0,
-    height * 0.72,
-    width,
-    height * 0.28
-  );
-
-  ctx.strokeStyle = "rgba(35,50,42,0.65)";
-  ctx.lineWidth = 2;
-
-  for (const bird of birds) {
-
-    bird.x +=
-      bird.speed *
-      state.motionSpeed *
-      0.001;
-
-    bird.y +=
-      Math.sin(
-        time * 0.001 +
-        bird.phase
-      ) *
-      0.12;
-
-    if (bird.x > width + 50) {
-      bird.x = -50;
-    }
-
-    ctx.beginPath();
-
-    ctx.arc(
-      bird.x - bird.size,
-      bird.y,
-      bird.size,
-      Math.PI,
-      0
-    );
-
-    ctx.arc(
-      bird.x + bird.size,
-      bird.y,
-      bird.size,
-      Math.PI,
-      0
-    );
-
-    ctx.stroke();
-  }
-}
-
-
-/* =========================================================
-   MORNING
-   ========================================================= */
-
-function drawMorningEnvironment(time) {
-
-  drawGradient(
-    "#c5d6d1",
-    "#d9b57b"
-  );
-
-  const sunX = width * 0.72;
-  const sunY = height * 0.28;
-
-  const pulse =
-    1 +
-    Math.sin(time * 0.0003) * 0.015;
-
-  const radius =
-    75 * pulse;
-
-  const glow = ctx.createRadialGradient(
-    sunX,
-    sunY,
-    10,
-    sunX,
-    sunY,
-    radius
-  );
-
-  glow.addColorStop(
-    0,
-    "rgba(255,240,180,0.8)"
-  );
-
-  glow.addColorStop(
-    1,
-    "rgba(255,200,100,0)"
-  );
-
-  ctx.fillStyle = glow;
-
-  ctx.beginPath();
-
-  ctx.arc(
-    sunX,
-    sunY,
-    radius,
-    0,
-    Math.PI * 2
-  );
-
-  ctx.fill();
-
-  drawMountains();
-}
-
-
-/* =========================================================
-   FOREST RAIN
-   ========================================================= */
-
-function drawForestRainEnvironment(time) {
-
-  drawGradient(
-    "#1f3930",
-    "#06110d"
-  );
-
-  drawForest(time);
-
-  // Mist
-  for (let i = 0; i < 4; i++) {
-
-    const mistX =
-      width *
-      (0.2 + i * 0.25);
-
-    const mistY =
-      height *
-      (0.35 + i * 0.07);
-
-    const gradient =
-      ctx.createRadialGradient(
-        mistX,
-        mistY,
-        10,
-        mistX,
-        mistY,
-        160
+      appStatus.classList.remove(
+        "visible"
       );
 
-    gradient.addColorStop(
-      0,
-      "rgba(220,235,225,0.12)"
-    );
+    }, 2500);
 
-    gradient.addColorStop(
-      1,
-      "rgba(220,235,225,0)"
-    );
-
-    ctx.fillStyle = gradient;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      mistX,
-      mistY,
-      160,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-  }
-
-  drawRainEnvironment(time);
 }
 
 
 /* =========================================================
-   WATERFALL
+   QUR'AN DATA
+   =========================================================
+
+   IMPORTANT:
+
+   This is only the initial local display state.
+
+   Production Qur'an text and translations will come
+   from the verified Quran Foundation backend.
+
+   We are deliberately not putting API credentials
+   inside this browser file.
    ========================================================= */
 
-function drawWaterfallEnvironment(time) {
+const fallbackSurah = {
 
-  drawGradient(
-    "#28484a",
-    "#071817"
-  );
+  number: 1,
 
-  drawForest(time);
+  name: "Al-Fatihah",
 
-  const waterfallX = width * 0.55;
-  const waterfallTop = height * 0.15;
-  const waterfallBottom = height * 0.8;
+  arabicName: "الفاتحة",
 
-  ctx.fillStyle =
-    "rgba(190,225,220,0.55)";
+  verses: [
 
-  ctx.fillRect(
-    waterfallX,
-    waterfallTop,
-    100,
-    waterfallBottom - waterfallTop
-  );
+    {
+      number: 1,
+      arabic:
+        "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      translation:
+        "In the name of Allah, the Most Gracious, the Most Merciful.",
+      transliteration: ""
+    },
 
-  ctx.strokeStyle =
-    "rgba(225,245,240,0.55)";
+    {
+      number: 2,
+      arabic:
+        "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+      translation:
+        "All praise is for Allah—Lord of the worlds.",
+      transliteration: ""
+    },
 
-  ctx.lineWidth = 2;
+    {
+      number: 3,
+      arabic:
+        "الرَّحْمَٰنِ الرَّحِيمِ",
+      translation:
+        "The Most Gracious, the Most Merciful.",
+      transliteration: ""
+    },
 
-  for (let i = 0; i < 20; i++) {
+    {
+      number: 4,
+      arabic:
+        "مَالِكِ يَوْمِ الدِّينِ",
+      translation:
+        "Master of the Day of Judgment.",
+      transliteration: ""
+    },
 
-    const x =
-      waterfallX +
-      random(0, 100);
+    {
+      number: 5,
+      arabic:
+        "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+      translation:
+        "You alone we worship and You alone we ask for help.",
+      transliteration: ""
+    },
 
-    const y =
-      waterfallTop +
+    {
+      number: 6,
+      arabic:
+        "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+      translation:
+        "Guide us along the Straight Path.",
+      transliteration: ""
+    },
+
+    {
+      number: 7,
+      arabic:
+        "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+      translation:
+        "The path of those You have blessed—not those You are displeased with, or those who are astray.",
+      transliteration: ""
+    }
+
+  ]
+
+};
+
+
+/* =========================================================
+   CURRENT VERSE
+   ========================================================= */
+
+function getCurrentVerse() {
+
+  return fallbackSurah.verses[
+    state.currentAyah - 1
+  ];
+
+}
+
+
+/* =========================================================
+   RENDER VERSE
+   ========================================================= */
+
+function renderVerse() {
+
+  const verse =
+    getCurrentVerse();
+
+  if (!verse) return;
+
+
+  /* Arabic */
+
+  if (arabicText) {
+
+    arabicText.textContent =
+      verse.arabic;
+
+  }
+
+
+  /* Translation */
+
+  if (translationText) {
+
+    translationText.textContent =
+      verse.translation;
+
+  }
+
+
+  /* Transliteration */
+
+  if (transliterationText) {
+
+    transliterationText.textContent =
+      verse.transliteration || "";
+
+  }
+
+
+  /* Number */
+
+  if (ayahNumber) {
+
+    ayahNumber.textContent =
+      toArabicNumber(
+        verse.number
+      );
+
+  }
+
+
+  /* Surah */
+
+  if (surahName) {
+
+    surahName.textContent =
+      fallbackSurah.name;
+
+  }
+
+
+  if (readerSurahName) {
+
+    readerSurahName.textContent =
+      fallbackSurah.name
+        .toUpperCase();
+
+  }
+
+
+  /* Counters */
+
+  if (ayahCounter) {
+
+    ayahCounter.textContent =
+      `Ayah ${state.currentAyah} of ${state.totalAyahs}`;
+
+  }
+
+
+  if (readerAyahCount) {
+
+    readerAyahCount.textContent =
+      `${state.currentAyah} / ${state.totalAyahs}`;
+
+  }
+
+
+  /* Location */
+
+  if (ayahLocation) {
+
+    ayahLocation.textContent =
+      `${state.currentSurah}:${state.currentAyah}`;
+
+  }
+
+
+  /* Progress */
+
+  if (ayahProgressFill) {
+
+    const percentage =
       (
-        (time * 0.0004 * 300 + i * 30)
-        % 500
-      );
+        state.currentAyah /
+        state.totalAyahs
+      ) * 100;
 
-    ctx.beginPath();
+    ayahProgressFill.style.width =
+      `${percentage}%`;
 
-    ctx.moveTo(
-      x,
-      y
-    );
-
-    ctx.lineTo(
-      x,
-      y + random(20, 60)
-    );
-
-    ctx.stroke();
   }
+
+
+  /* Reset audio display */
+
+  resetAudioInterface();
+
+
+  /* Bookmark */
+
+  updateBookmarkUI();
+
 }
 
 
 /* =========================================================
-   MOUNTAINS
+   ARABIC NUMBERS
    ========================================================= */
 
-function drawMountains() {
+function toArabicNumber(number) {
 
-  ctx.fillStyle =
-    "rgba(32,52,53,0.78)";
+  const digits = [
+    "٠",
+    "١",
+    "٢",
+    "٣",
+    "٤",
+    "٥",
+    "٦",
+    "٧",
+    "٨",
+    "٩"
+  ];
 
-  ctx.beginPath();
+  return String(number)
+    .split("")
+    .map(
+      digit => digits[
+        Number(digit)
+      ]
+    )
+    .join("");
 
-  ctx.moveTo(0, height * 0.72);
+}
 
-  for (
-    let x = 0;
-    x <= width;
-    x += 90
+
+/* =========================================================
+   NEXT AYAH
+   ========================================================= */
+
+function nextAyah() {
+
+  if (
+    state.currentAyah <
+    state.totalAyahs
   ) {
 
-    const peak =
-      height *
-      (0.30 + Math.sin(x * 0.01) * 0.09);
+    state.currentAyah++;
 
-    ctx.lineTo(
-      x,
-      peak
+    renderVerse();
+
+    showStatus(
+      `Ayah ${state.currentAyah}`
     );
+
+    return;
+
   }
 
-  ctx.lineTo(width, height);
-  ctx.lineTo(0, height);
 
-  ctx.closePath();
-
-  ctx.fill();
-}
-
-
-function drawMountainEnvironment(time) {
-
-  drawGradient(
-    "#506e73",
-    "#101d20"
+  showStatus(
+    "You have reached the end of this Surah."
   );
 
-  drawMountains();
 }
 
 
 /* =========================================================
-   NIGHT SKY
+   PREVIOUS AYAH
    ========================================================= */
 
-function drawNightEnvironment(time) {
+function previousAyah() {
 
-  drawGradient(
-    "#091427",
-    "#02050b"
-  );
-
-  for (const star of stars) {
-
-    const twinkle =
-      0.55 +
-      Math.sin(
-        time * 0.001 +
-        star.phase
-      ) *
-      0.35;
-
-    ctx.globalAlpha =
-      star.alpha *
-      twinkle;
-
-    ctx.fillStyle = "#f3eee0";
-
-    ctx.beginPath();
-
-    ctx.arc(
-      star.x,
-      star.y,
-      star.radius,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-  }
-
-  ctx.globalAlpha = 1;
-}
-
-
-/* =========================================================
-   THUNDER
-   ========================================================= */
-
-let lightning = 0;
-let nextLightning = performance.now() + random(5000, 12000);
-
-function drawThunderEnvironment(time) {
-
-  drawNightEnvironment(time);
-
-  if (time > nextLightning) {
-
-    lightning = 1;
-
-    nextLightning =
-      time +
-      random(7000, 15000);
-  }
-
-  if (lightning > 0) {
-
-    ctx.fillStyle =
-      `rgba(235,245,255,${lightning * 0.22})`;
-
-    ctx.fillRect(
-      0,
-      0,
-      width,
-      height
-    );
-
-    lightning -= 0.035;
-
-    if (lightning < 0) {
-      lightning = 0;
-    }
-  }
-}
-
-
-/* =========================================================
-   SAHARA
-   ========================================================= */
-
-function drawSaharaEnvironment(time) {
-
-  drawGradient(
-    "#9d7756",
-    "#3e281e"
-  );
-
-  ctx.fillStyle =
-    "rgba(220,180,125,0.45)";
-
-  ctx.beginPath();
-
-  ctx.moveTo(0, height * 0.64);
-
-  for (
-    let x = 0;
-    x <= width;
-    x += 50
+  if (
+    state.currentAyah >
+    1
   ) {
 
-    ctx.lineTo(
-      x,
-      height * 0.64 +
-      Math.sin(
-        x * 0.009 +
-        time * 0.0001
-      ) * 25
+    state.currentAyah--;
+
+    renderVerse();
+
+    showStatus(
+      `Ayah ${state.currentAyah}`
     );
+
+    return;
+
   }
 
-  ctx.lineTo(width, height);
-  ctx.lineTo(0, height);
 
-  ctx.closePath();
+  showStatus(
+    "You are already at the first ayah."
+  );
 
-  ctx.fill();
+}
 
-  for (const sand of sandParticles) {
 
-    sand.x +=
-      sand.speed *
-      state.motionSpeed *
-      0.001;
+/* =========================================================
+   NAVIGATION BUTTONS
+   ========================================================= */
 
-    if (sand.x > width) {
-      sand.x = 0;
+$("nextAyah")
+  ?.addEventListener(
+    "click",
+    nextAyah
+  );
+
+$("previousAyah")
+  ?.addEventListener(
+    "click",
+    previousAyah
+  );
+
+audioNext
+  ?.addEventListener(
+    "click",
+    nextAyah
+  );
+
+audioPrevious
+  ?.addEventListener(
+    "click",
+    previousAyah
+  );
+
+
+/* =========================================================
+   BOOKMARK
+   ========================================================= */
+
+function updateBookmarkUI() {
+
+  if (!bookmarkButton)
+    return;
+
+
+  bookmarkButton.textContent =
+    state.bookmarked
+      ? "♥"
+      : "♡";
+
+
+  bookmarkButton.setAttribute(
+    "aria-pressed",
+    String(
+      state.bookmarked
+    )
+  );
+
+}
+
+
+bookmarkButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      state.bookmarked =
+        !state.bookmarked;
+
+      updateBookmarkUI();
+
+      showStatus(
+        state.bookmarked
+          ? "Ayah bookmarked."
+          : "Bookmark removed."
+      );
+
     }
-
-    ctx.fillStyle =
-      "rgba(240,205,150,0.28)";
-
-    ctx.beginPath();
-
-    ctx.arc(
-      sand.x,
-      sand.y,
-      sand.size,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-  }
-}
-
-
-/* =========================================================
-   SPACE
-   ========================================================= */
-
-function drawSpaceEnvironment(time) {
-
-  drawGradient(
-    "#060518",
-    "#010108"
   );
-
-  for (const star of stars) {
-
-    const movement =
-      time *
-      0.00001 *
-      state.motionSpeed;
-
-    let x =
-      (
-        star.x +
-        movement * 40
-      ) %
-      width;
-
-    ctx.fillStyle =
-      `rgba(240,240,255,${star.alpha})`;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      x,
-      star.y,
-      star.radius,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-  }
-
-  // distant planet
-  const planetX = width * 0.72;
-  const planetY = height * 0.32;
-
-  const planet = ctx.createRadialGradient(
-    planetX - 30,
-    planetY - 30,
-    10,
-    planetX,
-    planetY,
-    110
-  );
-
-  planet.addColorStop(
-    0,
-    "rgba(160,180,200,0.7)"
-  );
-
-  planet.addColorStop(
-    1,
-    "rgba(30,35,70,0)"
-  );
-
-  ctx.fillStyle = planet;
-
-  ctx.beginPath();
-
-  ctx.arc(
-    planetX,
-    planetY,
-    110,
-    0,
-    Math.PI * 2
-  );
-
-  ctx.fill();
-}
-
-
-/* =========================================================
-   FIREPLACE
-   ========================================================= */
-
-function drawFireplace(time) {
-
-  const x = width * 0.78;
-  const y = height * 0.78;
-
-  // fireplace glow
-  const glow = ctx.createRadialGradient(
-    x,
-    y,
-    10,
-    x,
-    y,
-    260
-  );
-
-  glow.addColorStop(
-    0,
-    "rgba(255,180,80,0.28)"
-  );
-
-  glow.addColorStop(
-    1,
-    "rgba(255,120,30,0)"
-  );
-
-  ctx.fillStyle = glow;
-
-  ctx.beginPath();
-
-  ctx.arc(
-    x,
-    y,
-    260,
-    0,
-    Math.PI * 2
-  );
-
-  ctx.fill();
-
-
-  // fireplace body
-  ctx.fillStyle =
-    "rgba(40,28,23,0.85)";
-
-  ctx.fillRect(
-    x - 100,
-    y - 15,
-    200,
-    90
-  );
-
-
-  // flames
-  for (const flame of fireParticles) {
-
-    const flameX =
-      x +
-      flame.x +
-      Math.sin(
-        time * 0.004 +
-        flame.phase
-      ) * 10;
-
-    const flameY =
-      y -
-      Math.abs(
-        Math.sin(
-          time * 0.003 +
-          flame.phase
-        )
-      ) *
-      90;
-
-    const size =
-      flame.size *
-      (
-        0.7 +
-        Math.sin(
-          time * 0.006 +
-          flame.phase
-        ) *
-        0.25
-      );
-
-    const gradient =
-      ctx.createRadialGradient(
-        flameX,
-        flameY,
-        1,
-        flameX,
-        flameY,
-        size * 4
-      );
-
-    gradient.addColorStop(
-      0,
-      "rgba(255,240,170,0.95)"
-    );
-
-    gradient.addColorStop(
-      0.45,
-      "rgba(255,150,50,0.75)"
-    );
-
-    gradient.addColorStop(
-      1,
-      "rgba(255,80,20,0)"
-    );
-
-    ctx.fillStyle = gradient;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      flameX,
-      flameY,
-      size * 4,
-      0,
-      Math.PI * 2
-    );
-
-    ctx.fill();
-  }
-}
-
-
-/* =========================================================
-   FOREST + FIREPLACE
-   ========================================================= */
-
-function drawForestFireEnvironment(time) {
-
-  drawForestRainEnvironment(time);
-
-  drawFireplace(time);
-}
-
-
-/* =========================================================
-   ENVIRONMENT RENDERER
-   ========================================================= */
-
-function renderEnvironment(time) {
-
-  clearCanvas();
-
-  switch (state.environment) {
-
-    case "birds":
-      drawBirdEnvironment(time);
-      break;
-
-    case "morning":
-      drawMorningEnvironment(time);
-      break;
-
-    case "forest":
-      drawForestRainEnvironment(time);
-      break;
-
-    case "waterfall":
-      drawWaterfallEnvironment(time);
-      break;
-
-    case "mountains":
-      drawMountainEnvironment(time);
-      break;
-
-    case "night":
-      drawNightEnvironment(time);
-      break;
-
-    case "thunder":
-      drawThunderEnvironment(time);
-      break;
-
-    case "sahara":
-      drawSaharaEnvironment(time);
-      break;
-
-    case "space":
-      drawSpaceEnvironment(time);
-      break;
-
-    case "fireplace":
-      drawFireplaceEnvironment(time);
-      break;
-
-    case "forest-fire":
-      drawForestFireEnvironment(time);
-      break;
-
-    case "rain":
-    default:
-      drawRainEnvironment(time);
-      break;
-  }
-
-  drawAtmosphere();
-}
-
-
-/* =========================================================
-   FIREPLACE ONLY
-   ========================================================= */
-
-function drawFireplaceEnvironment(time) {
-
-  drawGradient(
-    "#261b18",
-    "#080706"
-  );
-
-  drawFireplace(time);
-}
-
-
-/* =========================================================
-   ATMOSPHERE
-   ========================================================= */
-
-function drawAtmosphere() {
-
-  // Dark translucent layer keeps Qur'an text readable.
-  const overlay =
-    state.environment === "morning"
-      ? "rgba(15,25,20,0.15)"
-      : "rgba(5,15,11,0.25)";
-
-  ctx.fillStyle = overlay;
-
-  ctx.fillRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  ctx.globalAlpha = 1;
-}
-
-
-/* =========================================================
-   ANIMATION LOOP
-   ========================================================= */
-
-function animate(time) {
-
-  const delta =
-    Math.min(
-      time - lastFrame,
-      50
-    );
-
-  lastFrame = time;
-
-  renderEnvironment(time);
-
-  animationFrame =
-    requestAnimationFrame(animate);
-}
-
-animationFrame =
-  requestAnimationFrame(animate);
-
-
-/* =========================================================
-   BLUR CONTROL
-   ========================================================= */
-
-function applyBlur(value) {
-
-  state.blur =
-    clamp(Number(value), 0, 20);
-
-  background.style.filter =
-    `blur(${state.blur}px)`;
-
-  background.style.transform =
-    `scale(${1.02 + state.blur * 0.004})`;
-}
-
-applyBlur(state.blur);
 
 
 /* =========================================================
    FONT SIZE
    ========================================================= */
 
-function applyFontScale(value) {
+const BASE_ARABIC_FONT_SIZE =
+  30;
+
+
+function applyFontScale(
+  value
+) {
 
   state.fontScale =
-    clamp(Number(value), 70, 180);
+    clamp(
+      Number(value),
+      70,
+      180
+    );
 
-  arabicText.style.fontSize =
-    `${state.fontScale}px`;
 
-  fontSizeLabel.textContent =
-    `${state.fontScale}%`;
+  const actualSize =
+    BASE_ARABIC_FONT_SIZE *
+    (
+      state.fontScale /
+      100
+    );
 
-  if (arabicSizeSlider) {
-    arabicSizeSlider.value =
-      state.fontScale;
+
+  if (arabicText) {
+
+    arabicText.style.fontSize =
+      `${actualSize}px`;
+
   }
+
+
+  if (fontScaleLabel) {
+
+    fontScaleLabel.textContent =
+      `${state.fontScale}%`;
+
+  }
+
+
+  const modalValue =
+    $("arabicSizeValue");
+
+  if (modalValue) {
+
+    modalValue.textContent =
+      `${state.fontScale}%`;
+
+  }
+
+
+  const slider =
+    $("arabicSizeSlider");
+
+  if (slider) {
+
+    slider.value =
+      state.fontScale;
+
+  }
+
 }
 
 
-/* =========================================================
-   FONT BUTTONS
-   ========================================================= */
-
-document
-  .getElementById("increaseFont")
+$("fontIncrease")
   ?.addEventListener(
     "click",
     () => {
@@ -1138,11 +678,12 @@ document
       applyFontScale(
         state.fontScale + 10
       );
+
     }
   );
 
-document
-  .getElementById("decreaseFont")
+
+$("fontDecrease")
   ?.addEventListener(
     "click",
     () => {
@@ -1150,11 +691,12 @@ document
       applyFontScale(
         state.fontScale - 10
       );
+
     }
   );
 
 
-arabicSizeSlider
+$("arabicSizeSlider")
   ?.addEventListener(
     "input",
     event => {
@@ -1162,15 +704,106 @@ arabicSizeSlider
       applyFontScale(
         event.target.value
       );
+
     }
   );
 
 
 /* =========================================================
-   BLUR SLIDER
+   BACKGROUND BLUR
    ========================================================= */
 
-blurSlider
+function applyBlur(
+  value
+) {
+
+  state.blur =
+    clamp(
+      Number(value),
+      0,
+      20
+    );
+
+
+  if (background) {
+
+    background.style.filter =
+      `blur(${state.blur}px)`;
+
+    background.style.transform =
+      `scale(${1.02 + state.blur * 0.004})`;
+
+  }
+
+
+  const blurValue =
+    $("blurValue");
+
+  if (blurValue) {
+
+    blurValue.textContent =
+      `${state.blur}px`;
+
+  }
+
+
+  const slider =
+    $("blurSlider");
+
+  if (slider) {
+
+    slider.value =
+      state.blur;
+
+  }
+
+}
+
+
+applyBlur(
+  state.blur
+);
+
+
+$("blurButton")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      const values =
+        [
+          0,
+          3,
+          6,
+          10,
+          14
+        ];
+
+
+      let index =
+        values.indexOf(
+          state.blur
+        );
+
+
+      index =
+        index === -1
+          ? 1
+          : (
+              index + 1
+            ) %
+            values.length;
+
+
+      applyBlur(
+        values[index]
+      );
+
+    }
+  );
+
+
+$("blurSlider")
   ?.addEventListener(
     "input",
     event => {
@@ -1178,78 +811,107 @@ blurSlider
       applyBlur(
         event.target.value
       );
+
     }
   );
 
 
 /* =========================================================
-   QUICK BLUR BUTTON
+   TRANSLITERATION
    ========================================================= */
 
-document
-  .getElementById("blurButton")
+function updateTransliteration() {
+
+  if (!transliterationText)
+    return;
+
+
+  if (
+    state.showTransliteration
+  ) {
+
+    transliterationText.hidden =
+      false;
+
+  } else {
+
+    transliterationText.hidden =
+      true;
+
+  }
+
+}
+
+
+transliterationToggle
   ?.addEventListener(
-    "click",
-    () => {
+    "change",
+    event => {
 
-      const values = [
-        0,
-        4,
-        8,
-        12,
-        16
-      ];
+      state.showTransliteration =
+        event.target.checked;
 
-      const currentIndex =
-        values.indexOf(
-          state.blur
-        );
+      updateTransliteration();
 
-      const nextIndex =
-        currentIndex >= 0
-          ? (currentIndex + 1) % values.length
-          : 2;
-
-      applyBlur(
-        values[nextIndex]
-      );
-
-      if (blurSlider) {
-        blurSlider.value =
-          values[nextIndex];
-      }
     }
   );
+
 
 /* =========================================================
    MOTION SPEED
    ========================================================= */
 
 const motionSpeedSlider =
-  document.getElementById("motionSpeedSlider");
+  $("motionSpeedSlider");
 
 const motionSpeedLabel =
-  document.getElementById("motionSpeedLabel");
+  $("motionSpeedLabel");
+
 
 if (motionSpeedSlider) {
-  motionSpeedSlider.addEventListener("input", event => {
 
-    state.motionSpeed =
-      Number(event.target.value);
+  motionSpeedSlider
+    .addEventListener(
+      "input",
+      event => {
 
-    if (motionSpeedLabel) {
+        state.motionSpeed =
+          Number(
+            event.target.value
+          );
 
-      const descriptions = {
-        0.9: "0.9× · Calm",
-        1.0: "1.0× · Natural",
-        1.1: "1.1× · Gentle"
-      };
 
-      motionSpeedLabel.textContent =
-        descriptions[state.motionSpeed] ||
-        `${state.motionSpeed}×`;
-    }
-  });
+        if (
+          motionSpeedLabel
+        ) {
+
+          const labels = {
+
+            "0.9":
+              "0.9× · Calm",
+
+            "1":
+              "1.0× · Natural",
+
+            "1.1":
+              "1.1× · Gentle"
+
+          };
+
+
+          motionSpeedLabel.textContent =
+            labels[
+              String(
+                state.motionSpeed
+              )
+            ] ||
+            `${state.motionSpeed}×`;
+
+        }
+
+      }
+    );
+
 }
 
 
@@ -1257,202 +919,1156 @@ if (motionSpeedSlider) {
    RECITATION SYNC
    ========================================================= */
 
-const recitationSync =
-  document.getElementById("recitationSync");
+$("recitationSync")
+  ?.addEventListener(
+    "change",
+    event => {
 
-if (recitationSync) {
+      state.syncWithRecitation =
+        event.target.checked;
 
-  recitationSync.addEventListener("change", event => {
+    }
+  );
 
-    state.syncWithRecitation =
-      event.target.checked;
 
-  });
-}
 /* =========================================================
-   PLAYBACK UI
-   ========================================================= */
-/* =========================================================
-   REAL QUR'AN AUDIO PLAYER
+   AUDIO
    ========================================================= */
 
-const quranAudio =
-  document.getElementById("quranAudio");
+function formatAudioTime(
+  seconds
+) {
 
-const audioPlayButton =
-  document.getElementById("audioPlayButton");
+  if (
+    !Number.isFinite(
+      seconds
+    )
+  ) {
 
-const audioProgress =
-  document.getElementById("audioProgress");
-
-const audioCurrentTime =
-  document.getElementById("audioCurrentTime");
-
-const audioDuration =
-  document.getElementById("audioDuration");
-
-const audioPrevious =
-  document.getElementById("audioPrevious");
-
-const audioNext =
-  document.getElementById("audioNext");
-
-const audioVolume =
-  document.getElementById("audioVolume");
-
-
-function formatAudioTime(seconds) {
-
-  if (!Number.isFinite(seconds)) {
     return "0:00";
+
   }
 
-  const minutes = Math.floor(seconds / 60);
 
-  const remainingSeconds =
-    Math.floor(seconds % 60)
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+
+  const remaining =
+    Math.floor(
+      seconds % 60
+    )
       .toString()
-      .padStart(2, "0");
+      .padStart(
+        2,
+        "0"
+      );
 
-  return `${minutes}:${remainingSeconds}`;
+
+  return `${minutes}:${remaining}`;
+
 }
 
 
-/* Play / pause */
+/* =========================================================
+   RESET AUDIO
+   ========================================================= */
 
-audioPlayButton?.addEventListener("click", async () => {
+function resetAudioInterface() {
 
-  if (!quranAudio) return;
-
-  /*
-    No audio source is intentionally inserted yet.
-    We will connect a verified Qur'an recitation source
-    in the next integration step.
-  */
-
-  if (!quranAudio.src) {
-    console.log(
-      "Qalbi Wasl: audio source not connected yet."
-    );
-    return;
-  }
-
-  if (quranAudio.paused) {
-
-    await quranAudio.play();
-
-  } else {
+  if (
+    quranAudio
+  ) {
 
     quranAudio.pause();
 
+    quranAudio.removeAttribute(
+      "src"
+    );
+
+    quranAudio.load();
+
   }
 
-});
 
+  state.playing =
+    false;
 
-/* Playing state */
-
-quranAudio?.addEventListener("play", () => {
-
-  if (!audioPlayButton) return;
-
-  audioPlayButton.textContent = "Ⅱ";
-  audioPlayButton.classList.add("playing");
-
-});
-
-
-/* Paused state */
-
-quranAudio?.addEventListener("pause", () => {
-
-  if (!audioPlayButton) return;
-
-  audioPlayButton.textContent = "▶";
-  audioPlayButton.classList.remove("playing");
-
-});
-
-
-/* Duration */
-
-quranAudio?.addEventListener("loadedmetadata", () => {
-
-  if (!audioDuration) return;
-
-  audioDuration.textContent =
-    formatAudioTime(quranAudio.duration);
-
-});
-
-
-/* Progress */
-
-quranAudio?.addEventListener("timeupdate", () => {
-
-  if (!quranAudio.duration) return;
-
-  const percentage =
-    (quranAudio.currentTime /
-      quranAudio.duration) * 100;
 
   if (audioProgress) {
-    audioProgress.value = percentage;
+
+    audioProgress.value =
+      0;
+
   }
+
 
   if (audioCurrentTime) {
+
     audioCurrentTime.textContent =
-      formatAudioTime(quranAudio.currentTime);
+      "0:00";
+
   }
 
-});
+
+  if (audioDuration) {
+
+    audioDuration.textContent =
+      "0:00";
+
+  }
 
 
-/* Seek */
+  if (audioPlayButton) {
 
-audioProgress?.addEventListener("input", () => {
+    audioPlayButton.textContent =
+      "▶";
 
-  if (!quranAudio?.duration) return;
+    audioPlayButton.classList.remove(
+      "playing"
+    );
 
-  quranAudio.currentTime =
-    (Number(audioProgress.value) / 100) *
-    quranAudio.duration;
+  }
 
-});
+}
 
 
-/* Previous verse */
+/* =========================================================
+   AUDIO PLAY / PAUSE
+   ========================================================= */
 
-audioPrevious?.addEventListener("click", () => {
+audioPlayButton
+  ?.addEventListener(
+    "click",
+    async () => {
 
-  console.log(
-    "Qalbi Wasl: previous verse requested."
+      /*
+        Audio is intentionally not connected yet.
+
+        The production source will come from our
+        verified backend integration.
+      */
+
+      if (
+        !quranAudio ||
+        !quranAudio.src
+      ) {
+
+        showStatus(
+          "Recitation audio will be connected next."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        if (
+          quranAudio.paused
+        ) {
+
+          await quranAudio.play();
+
+        } else {
+
+          quranAudio.pause();
+
+        }
+
+      } catch (
+        error
+      ) {
+
+        console.error(
+          error
+        );
+
+        showStatus(
+          "Audio could not be started."
+        );
+
+      }
+
+    }
   );
 
-});
 
+/* =========================================================
+   AUDIO EVENTS
+   ========================================================= */
 
-/* Next verse */
+quranAudio
+  ?.addEventListener(
+    "play",
+    () => {
 
-audioNext?.addEventListener("click", () => {
+      state.playing =
+        true;
 
-  console.log(
-    "Qalbi Wasl: next verse requested."
+      if (audioPlayButton) {
+
+        audioPlayButton.textContent =
+          "Ⅱ";
+
+        audioPlayButton.classList.add(
+          "playing"
+        );
+
+      }
+
+    }
   );
 
-});
+
+quranAudio
+  ?.addEventListener(
+    "pause",
+    () => {
+
+      state.playing =
+        false;
+
+      if (audioPlayButton) {
+
+        audioPlayButton.textContent =
+          "▶";
+
+        audioPlayButton.classList.remove(
+          "playing"
+        );
+
+      }
+
+    }
+  );
 
 
-/* Volume */
+quranAudio
+  ?.addEventListener(
+    "loadedmetadata",
+    () => {
 
-audioVolume?.addEventListener("click", () => {
+      if (
+        audioDuration
+      ) {
 
-  if (!quranAudio) return;
+        audioDuration.textContent =
+          formatAudioTime(
+            quranAudio.duration
+          );
 
-  quranAudio.muted =
-    !quranAudio.muted;
+      }
 
-  audioVolume.textContent =
-    quranAudio.muted ? "🔇" : "🔊";
+    }
+  );
 
-});
+
+quranAudio
+  ?.addEventListener(
+    "timeupdate",
+    () => {
+
+      if (
+        !quranAudio.duration
+      ) {
+
+        return;
+
+      }
+
+
+      const percentage =
+        (
+          quranAudio.currentTime /
+          quranAudio.duration
+        ) * 100;
+
+
+      if (
+        audioProgress
+      ) {
+
+        audioProgress.value =
+          percentage;
+
+      }
+
+
+      if (
+        audioCurrentTime
+      ) {
+
+        audioCurrentTime.textContent =
+          formatAudioTime(
+            quranAudio.currentTime
+          );
+
+      }
+
+    }
+  );
+
+
+quranAudio
+  ?.addEventListener(
+    "ended",
+    () => {
+
+      state.playing =
+        false;
+
+      if (
+        audioPlayButton
+      ) {
+
+        audioPlayButton.textContent =
+          "▶";
+
+      }
+
+      if (
+        state.currentAyah <
+        state.totalAyahs
+      ) {
+
+        nextAyah();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   AUDIO SEEK
+   ========================================================= */
+
+audioProgress
+  ?.addEventListener(
+    "input",
+    () => {
+
+      if (
+        !quranAudio ||
+        !quranAudio.duration
+      ) {
+
+        return;
+
+      }
+
+
+      quranAudio.currentTime =
+        (
+          Number(
+            audioProgress.value
+          ) /
+          100
+        ) *
+        quranAudio.duration;
+
+    }
+  );
+
+
+/* =========================================================
+   VOLUME
+   ========================================================= */
+
+audioVolume
+  ?.addEventListener(
+    "click",
+    () => {
+
+      if (!quranAudio)
+        return;
+
+
+      quranAudio.muted =
+        !quranAudio.muted;
+
+      state.muted =
+        quranAudio.muted;
+
+
+      audioVolume.textContent =
+        quranAudio.muted
+          ? "🔇"
+          : "🔊";
+
+    }
+  );
+
+
+/* =========================================================
+   SHUFFLE
+   ========================================================= */
+
+audioShuffle
+  ?.addEventListener(
+    "click",
+    () => {
+
+      state.shuffle =
+        !state.shuffle;
+
+
+      audioShuffle.classList.toggle(
+        "active",
+        state.shuffle
+      );
+
+
+      showStatus(
+        state.shuffle
+          ? "Shuffle enabled."
+          : "Normal Qur'an order."
+      );
+
+    }
+  );
+
+
+$("shuffleToggle")
+  ?.addEventListener(
+    "change",
+    event => {
+
+      state.shuffle =
+        event.target.checked;
+
+      audioShuffle?.classList.toggle(
+        "active",
+        state.shuffle
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   RECITER
+   ========================================================= */
+
+function setReciter(
+  name
+) {
+
+  state.reciter =
+    name;
+
+
+  if (
+    audioReciterName
+  ) {
+
+    audioReciterName.textContent =
+      name;
+
+  }
+
+
+  closeModal(
+    reciterModal
+  );
+
+
+  showStatus(
+    `${name} selected.`
+  );
+
+}
+
+
+document
+  .querySelectorAll(
+    ".selection-button[data-reciter]"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          setReciter(
+            button.dataset.reciter
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   MODAL SYSTEM
+   ========================================================= */
+
+function openModal(
+  modal
+) {
+
+  if (!modal)
+    return;
+
+
+  modal.classList.remove(
+    "hidden"
+  );
+
+  document.body.classList.add(
+    "modal-open"
+  );
+
+}
+
+
+function closeModal(
+  modal
+) {
+
+  if (!modal)
+    return;
+
+
+  modal.classList.add(
+    "hidden"
+  );
+
+
+  const openModals =
+    document.querySelectorAll(
+      ".modal:not(.hidden)"
+    );
+
+
+  if (
+    openModals.length === 0
+  ) {
+
+    document.body.classList.remove(
+      "modal-open"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   READING SETTINGS
+   ========================================================= */
+
+$("readingSettingsButton")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        textModal
+      );
+
+    }
+  );
+
+
+$("saveTextSettings")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        textModal
+      );
+
+    }
+  );
+
+
+$("closeTextModal")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        textModal
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   RECITER MODAL
+   ========================================================= */
+
+$("audioMoreButton")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        audioModal
+      );
+
+    }
+  );
+
+
+$("changeReciterFromAudio")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        audioModal
+      );
+
+      openModal(
+        reciterModal
+      );
+
+    }
+  );
+
+
+$("closeReciterModal")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        reciterModal
+      );
+
+    }
+  );
+
+
+$("closeAudioModal")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        audioModal
+      );
+
+    }
+  );
+
+
+$("closeAudioOptions")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        audioModal
+      );
+
+    }
+  );
+
+
+$("reciterButton")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        reciterModal
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   THEME SYSTEM
+   ========================================================= */
+
+function applyTheme(
+  theme
+) {
+
+  const validThemes =
+    [
+      "night",
+      "bright",
+      "warm"
+    ];
+
+
+  if (
+    !validThemes.includes(
+      theme
+    )
+  ) {
+
+    theme =
+      "night";
+
+  }
+
+
+  state.theme =
+    theme;
+
+
+  document.body.dataset.theme =
+    theme;
+
+
+  document
+    .querySelectorAll(
+      ".theme-option"
+    )
+    .forEach(
+      button => {
+
+        button.classList.toggle(
+          "active",
+          button.dataset.theme ===
+          theme
+        );
+
+      }
+    );
+
+
+  showStatus(
+    `${capitalize(theme)} theme selected.`
+  );
+
+}
+
+
+themeButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        themeModal
+      );
+
+    }
+  );
+
+
+document
+  .querySelectorAll(
+    ".theme-option"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          applyTheme(
+            button.dataset.theme
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+$("closeThemeModal")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        themeModal
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   ENVIRONMENT SYSTEM
+   ========================================================= */
+
+function setEnvironment(
+  environment
+) {
+
+  state.environment =
+    environment;
+
+
+  const option =
+    document.querySelector(
+      `.environment-option[data-environment="${environment}"]`
+    );
+
+
+  document
+    .querySelectorAll(
+      ".environment-option"
+    )
+    .forEach(
+      button => {
+
+        button.classList.toggle(
+          "active",
+          button.dataset.environment ===
+          environment
+        );
+
+      }
+    );
+
+
+  if (
+    option &&
+    environmentName
+  ) {
+
+    const label =
+      option.querySelector(
+        "span:nth-of-type(2)"
+      );
+
+
+    if (label) {
+
+      environmentName.textContent =
+        label.textContent;
+
+    }
+
+  }
+
+
+  closeModal(
+    environmentModal
+  );
+
+
+  showStatus(
+    environmentName?.textContent ||
+    "Environment changed."
+  );
+
+}
+
+
+document
+  .querySelectorAll(
+    ".environment-option"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          /*
+            Premium access will be enforced when
+            the subscription system is connected.
+          */
+
+          setEnvironment(
+            button.dataset.environment
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+$("environmentButton")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        environmentModal
+      );
+
+    }
+  );
+
+
+$("closeEnvironmentModal")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        environmentModal
+      );
+
+    }
+  );
+
+
+$("closeEnvironmentSettings")
+  ?.addEventListener(
+    "click",
+    () => {
+
+      closeModal(
+        environmentModal
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".nav-item"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          document
+            .querySelectorAll(
+              ".nav-item"
+            )
+            .forEach(
+              item => {
+
+                item.classList.remove(
+                  "active"
+                );
+
+              }
+            );
+
+
+          button.classList.add(
+            "active"
+          );
+
+
+          const tab =
+            button.dataset.tab;
+
+
+          if (
+            tab === "reading"
+          ) {
+
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+
+          }
+
+
+          if (
+            tab === "listen"
+          ) {
+
+            document
+              .getElementById(
+                "quranAudioPlayer"
+              )
+              ?.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+              });
+
+          }
+
+
+          if (
+            tab === "settings"
+          ) {
+
+            openModal(
+              textModal
+            );
+
+          }
+
+
+          if (
+            tab === "bookmarks"
+          ) {
+
+            showStatus(
+              state.bookmarked
+                ? "Current ayah is bookmarked."
+                : "No bookmark on this ayah."
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".modal"
+  )
+  .forEach(
+    modal => {
+
+      modal.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target ===
+            modal
+          ) {
+
+            closeModal(
+              modal
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   ESCAPE KEY
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key !== "Escape"
+    ) {
+
+      return;
+
+    }
+
+
+    document
+      .querySelectorAll(
+        ".modal:not(.hidden)"
+      )
+      .forEach(
+        modal => {
+
+          closeModal(
+            modal
+          );
+
+        }
+      );
+
+  }
+);
+
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+
+function clamp(
+  value,
+  min,
+  max
+) {
+
+  return Math.max(
+    min,
+    Math.min(
+      max,
+      value
+    )
+  );
+
+}
+
+
+function capitalize(
+  text
+) {
+
+  return text.charAt(0)
+    .toUpperCase() +
+    text.slice(1);
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+function initializeApp() {
+
+  applyTheme(
+    state.theme
+  );
+
+  applyFontScale(
+    state.fontScale
+  );
+
+  applyBlur(
+    state.blur
+  );
+
+  updateTransliteration();
+
+  updateBookmarkUI();
+
+  renderVerse();
+
+  if (
+    motionSpeedSlider
+  ) {
+
+    motionSpeedSlider.value =
+      state.motionSpeed;
+
+  }
+
+
+  showStatus(
+    "Qalbi Wasl is ready."
+  );
+
+}
+
+
+initializeApp();
