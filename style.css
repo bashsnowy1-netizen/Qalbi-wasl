@@ -1574,3 +1574,216 @@ canvas {
   border-color:
     rgba(255, 255, 255, 0.15);
 }
+/* =========================================================
+   QALBI WASL — REAL AUDIO PLAYER
+   ========================================================= */
+
+.quran-audio-player {
+  position: relative;
+  width: min(94%, 560px);
+  margin: 28px auto 0;
+  padding: 18px 18px 16px;
+  box-sizing: border-box;
+
+  background: rgba(4, 20, 17, 0.62);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 22px;
+
+  box-shadow:
+    0 18px 55px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.audio-reciter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reciter-avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,0.16),
+      rgba(0,100,90,0.35)
+    );
+
+  border: 1px solid rgba(255,255,255,0.14);
+  color: #f7f3e8;
+  font-size: 17px;
+}
+
+.reciter-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.audio-label {
+  display: block;
+  margin-bottom: 3px;
+
+  color: rgba(247,243,232,0.50);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+}
+
+.reciter-info strong {
+  display: block;
+  color: #fffdf5;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.audio-more {
+  width: 34px;
+  height: 34px;
+
+  border: 0;
+  background: transparent;
+  color: rgba(247,243,232,0.75);
+
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.audio-progress-area {
+  margin-top: 17px;
+}
+
+#audioProgress {
+  width: 100%;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+
+  border-radius: 20px;
+  background: rgba(255,255,255,0.18);
+  outline: none;
+}
+
+#audioProgress::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 13px;
+  height: 13px;
+
+  border-radius: 50%;
+  border: 0;
+
+  background: #eaf7ff;
+  box-shadow: 0 0 12px rgba(0,150,255,0.8);
+
+  cursor: pointer;
+}
+
+#audioProgress::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+
+  border-radius: 50%;
+  border: 0;
+
+  background: #eaf7ff;
+  cursor: pointer;
+}
+
+.audio-time-row {
+  display: flex;
+  justify-content: space-between;
+
+  margin-top: 7px;
+
+  color: rgba(247,243,232,0.48);
+  font-size: 9px;
+}
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+
+  margin-top: 16px;
+}
+
+.audio-controls button {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  background: transparent;
+
+  color: #f7f3e8;
+  font-size: 16px;
+
+  cursor: pointer;
+  transition: transform 0.18s ease;
+}
+
+.audio-controls button:active {
+  transform: scale(0.90);
+}
+
+.audio-play-button {
+  width: 52px !important;
+  height: 52px !important;
+
+  border-radius: 50% !important;
+
+  border: 1px solid rgba(90,190,255,0.8) !important;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0,120,255,0.28),
+      rgba(0,45,80,0.38)
+    ) !important;
+
+  box-shadow:
+    0 0 20px rgba(0,140,255,0.35),
+    inset 0 0 15px rgba(0,150,255,0.16);
+}
+
+.audio-play-button.playing {
+  color: #dff5ff;
+}
+
+@media (max-width: 390px) {
+
+  .quran-audio-player {
+    width: 96%;
+    padding: 16px 14px 14px;
+    border-radius: 19px;
+  }
+
+  .audio-controls {
+    gap: 15px;
+  }
+
+  .audio-controls button {
+    font-size: 14px;
+  }
+
+  .audio-play-button {
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
