@@ -875,3 +875,161 @@ input:focus-visible {
   }
 
 }
+/* =========================================================
+   LIVE WALLPAPER CONTROLS
+   ========================================================= */
+
+.wallpaper-controls {
+  margin-bottom: 18px;
+  padding: 14px;
+
+  border-radius: 15px;
+
+  background: rgba(41, 72, 59, 0.055);
+}
+
+.wallpaper-control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 10px 0;
+}
+
+.wallpaper-control-row + .wallpaper-control-row {
+  border-top: 1px solid var(--border);
+}
+
+.wallpaper-control-row strong {
+  display: block;
+
+  color: var(--green-dark);
+
+  font-size: 12px;
+}
+
+.wallpaper-control-row small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--text-soft);
+
+  font-size: 9px;
+}
+
+#motionSpeedSlider {
+  width: 130px;
+
+  accent-color: var(--green);
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   SWITCH
+   ========================================================= */
+
+.switch {
+  position: relative;
+
+  width: 44px;
+  height: 25px;
+
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 30px;
+
+  background: rgba(41, 72, 59, 0.18);
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.slider::before {
+  content: "";
+
+  position: absolute;
+
+  width: 19px;
+  height: 19px;
+
+  left: 3px;
+  top: 3px;
+
+  border-radius: 50%;
+
+  background: white;
+
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+
+  transition: 0.25s;
+}
+
+.switch input:checked + .slider {
+  background: var(--green);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(19px);
+}
+
+
+/* =========================================================
+   WALLPAPER LABELS
+   ========================================================= */
+
+.environment-option small {
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  opacity: 0.65;
+}
+
+.environment-option.premium {
+  position: relative;
+}
+
+.environment-option.premium::before {
+  content: "♛";
+
+  position: absolute;
+
+  top: 6px;
+  right: 7px;
+
+  font-size: 9px;
+
+  opacity: 0.75;
+}
+
+
+/* =========================================================
+   LARGER WALLPAPER LIBRARY
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+  .environment-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #motionSpeedSlider {
+    width: 105px;
+  }
+
+}
