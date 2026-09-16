@@ -206,64 +206,201 @@
 
     </section>
 
+<!-- LIVE WALLPAPER SECTION -->
+<section class="environment-section">
 
-    <!-- BACKGROUND / ENVIRONMENT -->
-    <section class="environment-section">
+  <div class="section-heading">
 
-      <div class="section-heading">
+    <div>
+      <p class="small-label">LIVE WALLPAPER</p>
+      <h2 id="environmentName">Rain</h2>
+    </div>
 
-        <div>
-          <p class="small-label">LISTENING ENVIRONMENT</p>
-          <h2 id="environmentName">Rain</h2>
-        </div>
+    <button
+      class="change-button"
+      id="environmentButton"
+    >
+      Customize
+    </button>
 
-        <button
-          class="change-button"
-          id="environmentButton"
-        >
-          Change
-        </button>
+  </div>
 
+
+  <!-- MOTION CONTROL -->
+  <div class="wallpaper-controls">
+
+    <div class="wallpaper-control-row">
+
+      <div>
+        <strong>Motion Speed</strong>
+        <small id="motionSpeedLabel">0.9× · Calm</small>
       </div>
 
+      <input
+        type="range"
+        id="motionSpeedSlider"
+        min="0.9"
+        max="1.1"
+        step="0.1"
+        value="0.9"
+        aria-label="Live wallpaper motion speed"
+      >
 
-      <div class="environment-options">
+    </div>
 
-        <button
-          class="environment-option active"
-          data-environment="rain"
-        >
-          🌧️
-          <span>Rain</span>
-        </button>
 
-        <button
-          class="environment-option"
-          data-environment="birds"
-        >
-          🐦
-          <span>Birds</span>
-        </button>
+    <div class="wallpaper-control-row">
 
-        <button
-          class="environment-option"
-          data-environment="morning"
-        >
-          🌅
-          <span>Morning</span>
-        </button>
-
-        <button
-          class="environment-option premium"
-          data-environment="forest"
-        >
-          🌲
-          <span>Forest</span>
-        </button>
-
+      <div>
+        <strong>Recitation Sync</strong>
+        <small>Subtle ambient rhythm</small>
       </div>
 
-    </section>
+      <label class="switch">
+
+        <input
+          type="checkbox"
+          id="recitationSync"
+          checked
+        >
+
+        <span class="slider"></span>
+
+      </label>
+
+    </div>
+
+  </div>
+
+
+  <!-- WALLPAPER LIBRARY -->
+  <div class="environment-options">
+
+    <!-- FREE -->
+    <button
+      class="environment-option active"
+      data-environment="rain"
+    >
+      🌧️
+      <span>Rain</span>
+      <small>FREE</small>
+    </button>
+
+
+    <button
+      class="environment-option"
+      data-environment="birds"
+    >
+      🐦
+      <span>Birds</span>
+      <small>FREE</small>
+    </button>
+
+
+    <button
+      class="environment-option"
+      data-environment="morning"
+    >
+      🌅
+      <span>Morning Sky</span>
+      <small>FREE</small>
+    </button>
+
+
+    <!-- PREMIUM -->
+    <button
+      class="environment-option premium"
+      data-environment="forest"
+    >
+      🌲
+      <span>Forest Rain</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="waterfall"
+    >
+      💧
+      <span>Waterfall</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="mountains"
+    >
+      🏔️
+      <span>Mountains</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="night"
+    >
+      🌌
+      <span>Night Sky</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="thunder"
+    >
+      ⛈️
+      <span>Night Thunder</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="sahara"
+    >
+      🏜️
+      <span>Sahara</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="space"
+    >
+      🚀
+      <span>Space</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="fireplace"
+    >
+      🔥
+      <span>Fireplace</span>
+      <small>PREMIUM</small>
+    </button>
+
+
+    <button
+      class="environment-option premium"
+      data-environment="forest-fire"
+    >
+      🌲🔥
+      <span>Forest + Fire</span>
+      <small>PREMIUM</small>
+    </button>
+
+  </div>
+
+</section>
+    
 
 
     <!-- BOTTOM NAVIGATION -->
