@@ -1516,3 +1516,61 @@ input:focus-visible {
   }
 
 }
+/* =========================================================
+   QALBI WASL — CINEMATIC VISUAL BOOST
+   ========================================================= */
+
+/* Make the live environment richer and more visible */
+canvas {
+  filter:
+    brightness(1.18)
+    contrast(1.12)
+    saturate(1.22);
+}
+
+
+/* Let more of the environment show through the reader */
+.reader-glass {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 28, 20, 0.30),
+      rgba(5, 20, 15, 0.48)
+    );
+
+  border-color:
+    rgba(255, 255, 255, 0.16);
+
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+
+/* Keep the Arabic extremely clear */
+.cinematic-arabic {
+  color: #fffef8;
+
+  text-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.70),
+    0 6px 18px rgba(0, 0, 0, 0.38);
+}
+
+
+/* Translation remains soft, but visible */
+.cinematic-translation {
+  color: rgba(255, 253, 245, 0.88);
+
+  text-shadow:
+    0 1px 5px rgba(0, 0, 0, 0.60);
+}
+
+
+/* Slightly brighter controls */
+.reader-controls button {
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  border-color:
+    rgba(255, 255, 255, 0.15);
+}
