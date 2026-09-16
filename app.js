@@ -1272,3 +1272,187 @@ if (recitationSync) {
 /* =========================================================
    PLAYBACK UI
    ========================================================= */
+/* =========================================================
+   REAL QUR'AN AUDIO PLAYER
+   ========================================================= */
+
+const quranAudio =
+  document.getElementById("quranAudio");
+
+const audioPlayButton =
+  document.getElementById("audioPlayButton");
+
+const audioProgress =
+  document.getElementById("audioProgress");
+
+const audioCurrentTime =
+  document.getElementById("audioCurrentTime");
+
+const audioDuration =
+  document.getElementById("audioDuration");
+
+const audioPrevious =
+  document.getElementById("audioPrevious");
+
+const audioNext =
+  document.getElementById("audioNext");
+
+const audioVolume =
+  document.getElementById("audioVolume");
+
+
+function formatAudioTime(seconds) {
+
+  if (!Number.isFinite(seconds)) {
+    return "0:00";
+  }
+
+  const minutes = Math.floor(seconds / 60);
+
+  const remainingSeconds =
+    Math.floor(seconds % 60)
+      .toString()
+      .padStart(2, "0");
+
+  return `${minutes}:${remainingSeconds}`;
+}
+
+
+/* Play / pause */
+
+audioPlayButton?.addEventListener("click", async () => {
+
+  if (!quranAudio) return;
+
+  /*
+    No audio source is intentionally inserted yet.
+    We will connect a verified Qur'an recitation source
+    in the next integration step.
+  */
+
+  if (!quranAudio.src) {
+    console.log(
+      "Qalbi Wasl: audio source not connected yet."
+    );
+    return;
+  }
+
+  if (quranAudio.paused) {
+
+    await quranAudio.play();
+
+  } else {
+
+    quranAudio.pause();
+
+  }
+
+});
+
+
+/* Playing state */
+
+quranAudio?.addEventListener("play", () => {
+
+  if (!audioPlayButton) return;
+
+  audioPlayButton.textContent = "Ⅱ";
+  audioPlayButton.classList.add("playing");
+
+});
+
+
+/* Paused state */
+
+quranAudio?.addEventListener("pause", () => {
+
+  if (!audioPlayButton) return;
+
+  audioPlayButton.textContent = "▶";
+  audioPlayButton.classList.remove("playing");
+
+});
+
+
+/* Duration */
+
+quranAudio?.addEventListener("loadedmetadata", () => {
+
+  if (!audioDuration) return;
+
+  audioDuration.textContent =
+    formatAudioTime(quranAudio.duration);
+
+});
+
+
+/* Progress */
+
+quranAudio?.addEventListener("timeupdate", () => {
+
+  if (!quranAudio.duration) return;
+
+  const percentage =
+    (quranAudio.currentTime /
+      quranAudio.duration) * 100;
+
+  if (audioProgress) {
+    audioProgress.value = percentage;
+  }
+
+  if (audioCurrentTime) {
+    audioCurrentTime.textContent =
+      formatAudioTime(quranAudio.currentTime);
+  }
+
+});
+
+
+/* Seek */
+
+audioProgress?.addEventListener("input", () => {
+
+  if (!quranAudio?.duration) return;
+
+  quranAudio.currentTime =
+    (Number(audioProgress.value) / 100) *
+    quranAudio.duration;
+
+});
+
+
+/* Previous verse */
+
+audioPrevious?.addEventListener("click", () => {
+
+  console.log(
+    "Qalbi Wasl: previous verse requested."
+  );
+
+});
+
+
+/* Next verse */
+
+audioNext?.addEventListener("click", () => {
+
+  console.log(
+    "Qalbi Wasl: next verse requested."
+  );
+
+});
+
+
+/* Volume */
+
+audioVolume?.addEventListener("click", () => {
+
+  if (!quranAudio) return;
+
+  quranAudio.muted =
+    !quranAudio.muted;
+
+  audioVolume.textContent =
+    quranAudio.muted ? "🔇" : "🔊";
+
+});
