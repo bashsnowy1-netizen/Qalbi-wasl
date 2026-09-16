@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Qalbi Wasl — Recitation</title>
+
+  <meta
+    name="description"
+    content="Qalbi Wasl — a peaceful Qur'an recitation experience."
+  >
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- LIVE BACKGROUND -->
+  <div class="live-background" id="liveBackground">
+    <div class="background-overlay"></div>
+  </div>
+
+  <!-- APP -->
+  <main class="app">
+
+    <!-- HEADER -->
+    <header class="top-bar">
+
+      <div class="brand">
+        <span class="brand-arabic">قلبي وصل</span>
+        <span class="brand-name">Qalbi Wasl</span>
+      </div>
+
+      <button
+        class="icon-button"
+        id="bookmarkButton"
+        aria-label="Bookmark verse"
+      >
+        ♡
+      </button>
+
+    </header>
+
+
+    <!-- SURAH INFORMATION -->
+    <section class="surah-header">
+
+      <p class="surah-label">SURAH</p>
+
+      <h1 id="surahName">Al-Fatihah</h1>
+
+      <p id="ayahCounter">Ayah 1 of 7</p>
+
+    </section>
+
+
+    <!-- QUR'AN READER -->
+    <section class="reader-card">
+
+      <div class="reader-top">
+
+        <span class="ayah-number" id="ayahNumber">
+          ١
+        </span>
+
+        <button
+          class="text-settings"
+          id="textSettingsButton"
+          aria-label="Text settings"
+        >
+          Aa
+        </button>
+
+      </div>
+
+
+      <!-- ARABIC -->
+      <div
+        class="arabic-text"
+        id="arabicText"
+        dir="rtl"
+      >
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </div>
+
+
+      <!-- TRANSLATION -->
+      <div
+        class="translation-text"
+        id="translationText"
+      >
+        In the name of Allah, the Most Compassionate, the Most Merciful.
+      </div>
+
+
+      <!-- READING CONTROLS -->
+      <div class="reader-controls">
+
+        <button id="decreaseFont">
+          A−
+        </button>
+
+        <span id="fontSizeLabel">
+          100%
+        </span>
+
+        <button id="increaseFont">
+          A+
+        </button>
+
+        <button id="blurButton">
+          Blur
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- AUDIO PLAYER -->
+    <section class="audio-player">
+
+      <div class="audio-info">
+
+        <div>
+          <p class="small-label">RECITER</p>
+          <strong id="reciterName">
+            Abdurrahman ibn Musad
+          </strong>
+        </div>
+
+        <button
+          class="change-button"
+          id="reciterButton"
+        >
+          Change
+        </button>
+
+      </div>
+
+
+      <!-- PROGRESS -->
+      <div class="progress-area">
+
+        <span id="currentTime">
+          0:00
+        </span>
+
+        <input
+          type="range"
+          id="audioProgress"
+          min="0"
+          max="100"
+          value="0"
+          aria-label="Audio progress"
+        >
+
+        <span id="duration">
+          0:00
+        </span>
+
+      </div>
+
+
+      <!-- PLAYER BUTTONS -->
+      <div class="player-controls">
+
+        <button
+          class="skip-button"
+          id="backButton"
+          aria-label="Back 10 seconds"
+        >
+          ↶
+          <span>10</span>
+        </button>
+
+
+        <button
+          class="play-button"
+          id="playButton"
+          aria-label="Play"
+        >
+          ▶
+        </button>
+
+
+        <button
+          class="skip-button"
+          id="forwardButton"
+          aria-label="Forward 10 seconds"
+        >
+          <span>10</span>
+          ↷
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- BACKGROUND / ENVIRONMENT -->
+    <section class="environment-section">
+
+      <div class="section-heading">
+
+        <div>
+          <p class="small-label">LISTENING ENVIRONMENT</p>
+          <h2 id="environmentName">Rain</h2>
+        </div>
+
+        <button
+          class="change-button"
+          id="environmentButton"
+        >
+          Change
+        </button>
+
+      </div>
+
+
+      <div class="environment-options">
+
+        <button
+          class="environment-option active"
+          data-environment="rain"
+        >
+          🌧️
+          <span>Rain</span>
+        </button>
+
+        <button
+          class="environment-option"
+          data-environment="birds"
+        >
+          🐦
+          <span>Birds</span>
+        </button>
+
+        <button
+          class="environment-option"
+          data-environment="morning"
+        >
+          🌅
+          <span>Morning</span>
+        </button>
+
+        <button
+          class="environment-option premium"
+          data-environment="forest"
+        >
+          🌲
+          <span>Forest</span>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+
+      <button class="nav-item active">
+        <span>📖</span>
+        <small>Reading</small>
+      </button>
+
+      <button class="nav-item">
+        <span>🎧</span>
+        <small>Listen</small>
+      </button>
+
+      <button class="nav-item">
+        <span>🔖</span>
+        <small>Bookmarks</small>
+      </button>
+
+      <button class="nav-item">
+        <span>⚙️</span>
+        <small>Settings</small>
+      </button>
+
+    </nav>
+
+  </main>
+
+
+  <!-- TEXT SETTINGS PANEL -->
+  <div
+    class="modal hidden"
+    id="textModal"
+  >
+
+    <div class="modal-content">
+
+      <button
+        class="modal-close"
+        id="closeTextModal"
+      >
+        ×
+      </button>
+
+      <h2>Reading Settings</h2>
+
+      <p>
+        Make the Qur'an text comfortable for your eyes.
+      </p>
+
+      <label>
+        Arabic text size
+      </label>
+
+      <input
+        type="range"
+        id="arabicSizeSlider"
+        min="70"
+        max="180"
+        value="100"
+      >
+
+      <label>
+        Background blur
+      </label>
+
+      <input
+        type="range"
+        id="blurSlider"
+        min="0"
+        max="20"
+        value="8"
+      >
+
+      <button
+        class="primary-button"
+        id="saveTextSettings"
+      >
+        Done
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECITER MODAL -->
+  <div
+    class="modal hidden"
+    id="reciterModal"
+  >
+
+    <div class="modal-content">
+
+      <button
+        class="modal-close"
+        id="closeReciterModal"
+      >
+        ×
+      </button>
+
+      <h2>Choose Reciter</h2>
+
+      <button class="selection-button">
+        Abdurrahman ibn Musad
+      </button>
+
+      <button class="selection-button">
+        Yasser Addosari
+      </button>
+
+      <p class="notice">
+        Additional reciters will be added only when their audio
+        sources and permissions have been verified.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>
