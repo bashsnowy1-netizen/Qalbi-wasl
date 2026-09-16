@@ -63,68 +63,88 @@
     </section>
 
 
-    <!-- QUR'AN READER -->
-    <section class="reader-card">
+    <!-- CINEMATIC QUR'AN READER -->
+<section class="cinematic-reader">
 
-      <div class="reader-top">
+  <div class="reader-glass">
 
-        <span class="ayah-number" id="ayahNumber">
-          ١
-        </span>
+    <!-- AYAH HEADER -->
+    <div class="ayah-meta">
 
-        <button
-          class="text-settings"
-          id="textSettingsButton"
-          aria-label="Text settings"
-        >
-          Aa
-        </button>
-
+      <div class="surah-info">
+        <span class="surah-label">AL-FATIHAH</span>
+        <span class="ayah-count">1 / 7</span>
       </div>
 
+      <button
+        class="bookmark-button"
+        id="bookmarkButton"
+        aria-label="Bookmark ayah"
+      >
+        ♡
+      </button>
 
-      <!-- ARABIC -->
-      <div
-        class="arabic-text"
+    </div>
+
+
+    <!-- AYAH -->
+    <div class="ayah-display">
+
+      <div class="ayah-number">
+        ١
+      </div>
+
+      <p
+        class="arabic-text cinematic-arabic"
         id="arabicText"
         dir="rtl"
       >
-        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-      </div>
+        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+      </p>
 
-
-      <!-- TRANSLATION -->
-      <div
-        class="translation-text"
+      <p
+        class="translation cinematic-translation"
         id="translationText"
       >
-        In the name of Allah, the Most Compassionate, the Most Merciful.
-      </div>
+        In the name of Allah, the Most Gracious,
+        the Most Merciful.
+      </p>
+
+    </div>
 
 
-      <!-- READING CONTROLS -->
-      <div class="reader-controls">
+    <!-- DECORATIVE DIVIDER -->
+    <div class="ayah-divider">
+      <span></span>
+      <b>۞</b>
+      <span></span>
+    </div>
 
-        <button id="decreaseFont">
-          A−
-        </button>
 
-        <span id="fontSizeLabel">
-          100%
-        </span>
+    <!-- READER CONTROLS -->
+    <div class="reader-controls">
 
-        <button id="increaseFont">
-          A+
-        </button>
+      <button id="fontDecrease">
+        A−
+      </button>
 
-        <button id="blurButton">
-          Blur
-        </button>
+      <span id="fontScale">
+        100%
+      </span>
 
-      </div>
+      <button id="fontIncrease">
+        A+
+      </button>
 
-    </section>
+      <button id="blurButton">
+        Blur
+      </button>
 
+    </div>
+
+  </div>
+
+</section>
 
     <!-- AUDIO PLAYER -->
     <section class="audio-player">
