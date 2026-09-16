@@ -87,7 +87,93 @@
       >
         ♡
       </button>
+<!-- REAL QUR'AN AUDIO PLAYER -->
+<div class="quran-audio-player" id="quranAudioPlayer">
 
+  <div class="audio-reciter-row">
+    <div class="reciter-avatar">♪</div>
+
+    <div class="reciter-info">
+      <span class="audio-label">RECITER</span>
+      <strong id="audioReciterName">
+        Abdurrahman ibn Musad
+      </strong>
+    </div>
+
+    <button
+      class="audio-more"
+      id="audioMoreButton"
+      aria-label="Audio options"
+    >
+      ⋮
+    </button>
+  </div>
+
+  <div class="audio-progress-area">
+
+    <input
+      type="range"
+      id="audioProgress"
+      min="0"
+      max="100"
+      value="0"
+      aria-label="Audio progress"
+    >
+
+    <div class="audio-time-row">
+      <span id="audioCurrentTime">0:00</span>
+      <span id="audioDuration">0:00</span>
+    </div>
+
+  </div>
+
+  <div class="audio-controls">
+
+    <button
+      id="audioShuffle"
+      aria-label="Shuffle"
+    >
+      ⤨
+    </button>
+
+    <button
+      id="audioPrevious"
+      aria-label="Previous verse"
+    >
+      |◀
+    </button>
+
+    <button
+      class="audio-play-button"
+      id="audioPlayButton"
+      aria-label="Play"
+    >
+      ▶
+    </button>
+
+    <button
+      id="audioNext"
+      aria-label="Next verse"
+    >
+      ▶|
+    </button>
+
+    <button
+      id="audioVolume"
+      aria-label="Volume"
+    >
+      🔊
+    </button>
+
+  </div>
+
+  <!-- Real HTML5 audio engine -->
+  <audio
+    id="quranAudio"
+    preload="metadata"
+  ></audio>
+
+</div>
     </div>
 
 
