@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <head>
 
   <meta charset="UTF-8">
 
@@ -10,539 +10,998 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <meta name="google" content="notranslate">
-
-  <title>Qalbi Wasl — Recitation</title>
+  <!-- Prevent automatic translation of Qur'an content -->
+  <meta
+    name="google"
+    content="notranslate"
+  >
 
   <meta
     name="description"
-    content="Qalbi Wasl — a peaceful Qur'an recitation experience."
+    content="Qalbi Wasl — a peaceful Qur'an-first recitation experience."
   >
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta
+    name="theme-color"
+    content="#101914"
+  >
+
+  <title>
+    Qalbi Wasl — Recitation
+  </title>
+
+
+  <!-- =====================================================
+       QUR'AN FONT
+       ===================================================== -->
 
   <link
-  rel="preload"
-  href="https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2"
-  as="font"
-  type="font/woff2"
-  crossorigin
->
+    rel="preload"
+    href="https://verses.quran.foundation/fonts/quran/hafs/uthmanic_hafs/UthmanicHafs1Ver18.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
   >
 
-  <link rel="stylesheet" href="style.css">
+
+  <!-- =====================================================
+       STYLES
+       ===================================================== -->
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
+
 
 <body>
 
-  <!-- LIVE BACKGROUND -->
-  <div class="live-background" id="liveBackground">
-    <div class="background-overlay"></div>
+
+  <!-- =====================================================
+       LIVE CINEMATIC BACKGROUND
+       ===================================================== -->
+
+  <div
+    class="live-background"
+    id="liveBackground"
+    aria-hidden="true"
+  >
+
+    <div
+      class="background-overlay"
+      id="backgroundOverlay"
+    ></div>
+
   </div>
 
-  <!-- APP -->
-  <main class="app">
 
-    <!-- HEADER -->
+
+  <!-- =====================================================
+       APPLICATION
+       ===================================================== -->
+
+  <main
+    class="app"
+    id="app"
+  >
+
+
+    <!-- ===================================================
+         TOP BAR
+         =================================================== -->
+
     <header class="top-bar">
 
+
+      <!-- BRAND -->
+
       <div class="brand">
-        <span class="brand-arabic">قلبي وصل</span>
-        <span class="brand-name">Qalbi Wasl</span>
+
+        <span
+          class="brand-arabic"
+          lang="ar"
+          dir="rtl"
+        >
+          قلبي وصل
+        </span>
+
+        <span class="brand-name">
+          Qalbi Wasl
+        </span>
+
       </div>
 
-      <button
-        class="icon-button"
-        id="bookmarkButton"
-        aria-label="Bookmark verse"
-      >
-        ♡
-      </button>
+
+      <!-- TOP ACTIONS -->
+
+      <div class="top-actions">
+
+        <button
+          class="icon-button"
+          id="themeButton"
+          aria-label="Change theme"
+          title="Theme"
+        >
+          ◐
+        </button>
+
+
+        <button
+          class="icon-button"
+          id="bookmarkButton"
+          aria-label="Bookmark current ayah"
+          title="Bookmark"
+        >
+          ♡
+        </button>
+
+      </div>
 
     </header>
 
 
-    <!-- SURAH INFORMATION -->
-    <section class="surah-header">
 
-      <p class="surah-label">SURAH</p>
+    <!-- ===================================================
+         SURAH HEADER
+         =================================================== -->
 
-      <h1 id="surahName">Al-Fatihah</h1>
+    <section
+      class="surah-header"
+      aria-labelledby="surahName"
+    >
 
-      <p id="ayahCounter">Ayah 1 of 7</p>
+      <p class="surah-label">
+        SURAH
+      </p>
+
+      <h1 id="surahName">
+        Al-Fatihah
+      </h1>
+
+      <p id="ayahCounter">
+        Ayah 1 of 7
+      </p>
 
     </section>
 
 
-    <!-- CINEMATIC QUR'AN READER -->
-<section class="cinematic-reader">
 
-  <div class="reader-glass">
+    <!-- ===================================================
+         CINEMATIC QUR'AN READER
+         =================================================== -->
 
-    <!-- AYAH HEADER -->
-    <div class="ayah-meta">
+    <section
+      class="cinematic-reader"
+      aria-label="Qur'an reader"
+    >
 
-      <div class="surah-info">
-        <span class="surah-label">AL-FATIHAH</span>
-        <span class="ayah-count">1 / 7</span>
+
+      <!-- =================================================
+           AYAH CONTENT
+           ================================================= -->
+
+      <div class="reader-content">
+
+
+        <!-- AYAH META -->
+
+        <div class="ayah-meta">
+
+          <div class="surah-info">
+
+            <span
+              class="surah-label"
+              id="readerSurahName"
+            >
+              AL-FATIHAH
+            </span>
+
+            <span
+              class="ayah-count"
+              id="readerAyahCount"
+            >
+              1 / 7
+            </span>
+
+          </div>
+
+
+          <div
+            class="ayah-location"
+            id="ayahLocation"
+          >
+            1:1
+          </div>
+
+        </div>
+
+
+
+        <!-- AYAH -->
+
+        <div class="ayah-display">
+
+
+          <!-- AYAH NUMBER -->
+
+          <div
+            class="ayah-number"
+            id="ayahNumber"
+            aria-hidden="true"
+          >
+            ١
+          </div>
+
+
+          <!-- ARABIC -->
+
+          <p
+            class="arabic-text cinematic-arabic"
+            id="arabicText"
+            dir="rtl"
+            lang="ar"
+            translate="no"
+          >
+            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+          </p>
+
+
+          <!-- TRANSLATION -->
+
+          <p
+            class="translation cinematic-translation"
+            id="translationText"
+          >
+            In the name of Allah, the Most Gracious,
+            the Most Merciful.
+          </p>
+
+
+          <!-- OPTIONAL TRANSLITERATION -->
+
+          <p
+            class="transliteration"
+            id="transliterationText"
+            hidden
+          >
+          </p>
+
+        </div>
+
+
+
+        <!-- DECORATIVE DIVIDER -->
+
+        <div
+          class="ayah-divider"
+          aria-hidden="true"
+        >
+
+          <span></span>
+
+          <b>۞</b>
+
+          <span></span>
+
+        </div>
+
+
+
+        <!-- =================================================
+             AYAH NAVIGATION
+             ================================================= -->
+
+        <div class="ayah-navigation">
+
+
+          <button
+            class="ayah-nav-button"
+            id="previousAyah"
+            aria-label="Previous ayah"
+          >
+            <span aria-hidden="true">
+              ‹
+            </span>
+
+            <small>
+              Previous
+            </small>
+
+          </button>
+
+
+
+          <div
+            class="ayah-progress"
+            aria-hidden="true"
+          >
+
+            <span
+              class="ayah-progress-fill"
+              id="ayahProgressFill"
+            ></span>
+
+          </div>
+
+
+
+          <button
+            class="ayah-nav-button"
+            id="nextAyah"
+            aria-label="Next ayah"
+          >
+
+            <small>
+              Next
+            </small>
+
+            <span aria-hidden="true">
+              ›
+            </span>
+
+          </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             READER CONTROLS
+             ================================================= -->
+
+        <div class="reader-controls">
+
+
+          <button
+            id="fontDecrease"
+            aria-label="Decrease Arabic text size"
+          >
+            A−
+          </button>
+
+
+          <span id="fontScale">
+            100%
+          </span>
+
+
+          <button
+            id="fontIncrease"
+            aria-label="Increase Arabic text size"
+          >
+            A+
+          </button>
+
+
+          <button
+            id="blurButton"
+            aria-label="Change background blur"
+          >
+            Blur
+          </button>
+
+
+          <button
+            id="readingSettingsButton"
+            aria-label="Reading settings"
+          >
+            ⋯
+          </button>
+
+        </div>
+
       </div>
-<button
-  class="icon-button"
-  id="bookmarkButton"
-  aria-label="Bookmark verse"
->
-  ♡
-</button>
-        ♡
-      </button>
-<!-- REAL QUR'AN AUDIO PLAYER -->
-<div class="quran-audio-player" id="quranAudioPlayer">
-
-  <div class="audio-reciter-row">
-    <div class="reciter-avatar">♪</div>
-
-    <div class="reciter-info">
-      <span class="audio-label">RECITER</span>
-      <strong id="audioReciterName">
-        Abdurrahman ibn Musad
-      </strong>
-    </div>
-
-    <button
-      class="audio-more"
-      id="audioMoreButton"
-      aria-label="Audio options"
-    >
-      ⋮
-    </button>
-  </div>
-
-  <div class="audio-progress-area">
-
-    <input
-      type="range"
-      id="audioProgress"
-      min="0"
-      max="100"
-      value="0"
-      aria-label="Audio progress"
-    >
-
-    <div class="audio-time-row">
-      <span id="audioCurrentTime">0:00</span>
-      <span id="audioDuration">0:00</span>
-    </div>
-
-  </div>
-
-  <div class="audio-controls">
-
-    <button
-      id="audioShuffle"
-      aria-label="Shuffle"
-    >
-      ⤨
-    </button>
-
-    <button
-      id="audioPrevious"
-      aria-label="Previous verse"
-    >
-      |◀
-    </button>
-
-    <button
-      class="audio-play-button"
-      id="audioPlayButton"
-      aria-label="Play"
-    >
-      ▶
-    </button>
-
-    <button
-      id="audioNext"
-      aria-label="Next verse"
-    >
-      ▶|
-    </button>
-
-    <button
-      id="audioVolume"
-      aria-label="Volume"
-    >
-      🔊
-    </button>
-
-  </div>
-
-  <!-- Real HTML5 audio engine -->
-  <audio
-    id="quranAudio"
-    preload="metadata"
-  ></audio>
-
-</div>
-    </div>
 
 
-    <!-- AYAH -->
-    <div class="ayah-display">
 
-      <div class="ayah-number">
-        ١
+      <!-- =================================================
+           REAL AUDIO PLAYER
+           ================================================= -->
+
+      <div
+        class="quran-audio-player"
+        id="quranAudioPlayer"
+      >
+
+
+        <!-- RECITER -->
+
+        <div class="audio-reciter-row">
+
+
+          <div
+            class="reciter-avatar"
+            id="reciterAvatar"
+            aria-hidden="true"
+          >
+            ♪
+          </div>
+
+
+          <div class="reciter-info">
+
+            <span class="audio-label">
+              RECITER
+            </span>
+
+            <strong id="audioReciterName">
+              Abdurrahman ibn Musad
+            </strong>
+
+          </div>
+
+
+          <button
+            class="audio-more"
+            id="audioMoreButton"
+            aria-label="Audio options"
+          >
+            ⋮
+          </button>
+
+        </div>
+
+
+
+        <!-- AUDIO PROGRESS -->
+
+        <div class="audio-progress-area">
+
+
+          <input
+            type="range"
+            id="audioProgress"
+            min="0"
+            max="100"
+            value="0"
+            step="0.1"
+            aria-label="Audio progress"
+          >
+
+
+          <div class="audio-time-row">
+
+            <span id="audioCurrentTime">
+              0:00
+            </span>
+
+            <span id="audioDuration">
+              0:00
+            </span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- AUDIO CONTROLS -->
+
+        <div class="audio-controls">
+
+
+          <button
+            id="audioShuffle"
+            aria-label="Shuffle playback"
+          >
+            ⤨
+          </button>
+
+
+          <button
+            id="audioPrevious"
+            aria-label="Previous ayah"
+          >
+            |◀
+          </button>
+
+
+          <button
+            class="audio-play-button"
+            id="audioPlayButton"
+            aria-label="Play"
+          >
+            ▶
+          </button>
+
+
+          <button
+            id="audioNext"
+            aria-label="Next ayah"
+          >
+            ▶|
+          </button>
+
+
+          <button
+            id="audioVolume"
+            aria-label="Volume"
+          >
+            🔊
+          </button>
+
+        </div>
+
+
+        <!-- ACTUAL HTML AUDIO ENGINE -->
+
+        <audio
+          id="quranAudio"
+          preload="metadata"
+        ></audio>
+
       </div>
 
-      <p
-        class="arabic-text cinematic-arabic"
-        id="arabicText"
-        dir="rtl"
-      >
-        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-      </p>
-
-      <p
-        class="translation cinematic-translation"
-        id="translationText"
-      >
-        In the name of Allah, the Most Gracious,
-        the Most Merciful.
-      </p>
-
-    </div>
+    </section>
 
 
-    <!-- DECORATIVE DIVIDER -->
-    <div class="ayah-divider">
-      <span></span>
-      <b>۞</b>
-      <span></span>
-    </div>
+
+    <!-- ===================================================
+         LIVE WALLPAPER
+         =================================================== -->
+
+    <section
+      class="environment-section"
+      aria-labelledby="environmentName"
+    >
 
 
-    <!-- READER CONTROLS -->
-    <div class="reader-controls">
+      <div class="section-heading">
 
-      <button id="fontDecrease">
-        A−
-      </button>
-
-      <span id="fontScale">
-        100%
-      </span>
-
-      <button id="fontIncrease">
-        A+
-      </button>
-
-      <button id="blurButton">
-        Blur
-      </button>
-
-    </div>
-
-  </div>
-
-</section>
-
-    <!-- AUDIO PLAYER -->
-    <section class="audio-player">
-
-      <div class="audio-info">
 
         <div>
-          <p class="small-label">RECITER</p>
-          <strong id="reciterName">
-            Abdurrahman ibn Musad
-          </strong>
+
+          <p class="small-label">
+            LIVE WALLPAPER
+          </p>
+
+          <h2 id="environmentName">
+            Rain
+          </h2>
+
         </div>
+
 
         <button
           class="change-button"
-          id="reciterButton"
+          id="environmentButton"
         >
-          Change
+          Customize
         </button>
 
       </div>
 
 
-      <!-- PROGRESS -->
-      <div class="progress-area">
 
-        <span id="currentTime">
-          0:00
-        </span>
+      <!-- MOTION -->
 
-        <input
-          type="range"
-          id="audioProgress"
-          min="0"
-          max="100"
-          value="0"
-          aria-label="Audio progress"
-        >
+      <div class="wallpaper-controls">
 
-        <span id="duration">
-          0:00
-        </span>
+
+        <div class="wallpaper-control-row">
+
+
+          <div>
+
+            <strong>
+              Motion Speed
+            </strong>
+
+            <small id="motionSpeedLabel">
+              0.9× · Calm
+            </small>
+
+          </div>
+
+
+          <input
+            type="range"
+            id="motionSpeedSlider"
+            min="0.9"
+            max="1.1"
+            step="0.1"
+            value="0.9"
+            aria-label="Live wallpaper motion speed"
+          >
+
+        </div>
+
+
+
+        <!-- RECITATION SYNC -->
+
+        <div class="wallpaper-control-row">
+
+
+          <div>
+
+            <strong>
+              Recitation Sync
+            </strong>
+
+            <small>
+              Subtle ambient rhythm
+            </small>
+
+          </div>
+
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              id="recitationSync"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
 
       </div>
 
 
-      <!-- PLAYER BUTTONS -->
-      <div class="player-controls">
+
+      <!-- =================================================
+           WALLPAPER LIBRARY
+           ================================================= -->
+
+      <div
+        class="environment-options"
+        id="environmentOptions"
+      >
+
+
+        <!-- FREE -->
 
         <button
-          class="skip-button"
-          id="backButton"
-          aria-label="Back 10 seconds"
+          class="environment-option active"
+          data-environment="rain"
+          data-access="free"
         >
-          ↶
-          <span>10</span>
+
+          <span aria-hidden="true">
+            🌧️
+          </span>
+
+          <span>
+            Rain
+          </span>
+
+          <small>
+            FREE
+          </small>
+
         </button>
 
 
+
         <button
-          class="play-button"
-          id="playButton"
-          aria-label="Play"
+          class="environment-option"
+          data-environment="birds"
+          data-access="free"
         >
-          ▶
+
+          <span aria-hidden="true">
+            🐦
+          </span>
+
+          <span>
+            Birds
+          </span>
+
+          <small>
+            FREE
+          </small>
+
         </button>
 
 
+
         <button
-          class="skip-button"
-          id="forwardButton"
-          aria-label="Forward 10 seconds"
+          class="environment-option"
+          data-environment="morning"
+          data-access="free"
         >
-          <span>10</span>
-          ↷
+
+          <span aria-hidden="true">
+            🌅
+          </span>
+
+          <span>
+            Morning Sky
+          </span>
+
+          <small>
+            FREE
+          </small>
+
+        </button>
+
+
+
+        <!-- PREMIUM -->
+
+        <button
+          class="environment-option premium"
+          data-environment="forest"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🌲
+          </span>
+
+          <span>
+            Forest Rain
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="waterfall"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            💧
+          </span>
+
+          <span>
+            Waterfall
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="mountains"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🏔️
+          </span>
+
+          <span>
+            Mountains
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="night"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🌌
+          </span>
+
+          <span>
+            Night Sky
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="thunder"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            ⛈️
+          </span>
+
+          <span>
+            Night Thunder
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="sahara"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🏜️
+          </span>
+
+          <span>
+            Sahara
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="space"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🚀
+          </span>
+
+          <span>
+            Space
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="fireplace"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🔥
+          </span>
+
+          <span>
+            Fireplace
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
+        </button>
+
+
+
+        <button
+          class="environment-option premium"
+          data-environment="forest-fire"
+          data-access="premium"
+        >
+
+          <span aria-hidden="true">
+            🌲🔥
+          </span>
+
+          <span>
+            Forest + Fire
+          </span>
+
+          <small>
+            PREMIUM
+          </small>
+
         </button>
 
       </div>
 
     </section>
 
-<!-- LIVE WALLPAPER SECTION -->
-<section class="environment-section">
 
-  <div class="section-heading">
 
-    <div>
-      <p class="small-label">LIVE WALLPAPER</p>
-      <h2 id="environmentName">Rain</h2>
-    </div>
+    <!-- ===================================================
+         BOTTOM NAVIGATION
+         =================================================== -->
 
-    <button
-      class="change-button"
-      id="environmentButton"
+    <nav
+      class="bottom-nav"
+      aria-label="Main navigation"
     >
-      Customize
-    </button>
-
-  </div>
 
 
-  <!-- MOTION CONTROL -->
-  <div class="wallpaper-controls">
-
-    <div class="wallpaper-control-row">
-
-      <div>
-        <strong>Motion Speed</strong>
-        <small id="motionSpeedLabel">0.9× · Calm</small>
-      </div>
-
-      <input
-        type="range"
-        id="motionSpeedSlider"
-        min="0.9"
-        max="1.1"
-        step="0.1"
-        value="0.9"
-        aria-label="Live wallpaper motion speed"
+      <button
+        class="nav-item active"
+        data-tab="reading"
       >
 
-    </div>
+        <span aria-hidden="true">
+          📖
+        </span>
 
+        <small>
+          Reading
+        </small>
 
-    <div class="wallpaper-control-row">
-
-      <div>
-        <strong>Recitation Sync</strong>
-        <small>Subtle ambient rhythm</small>
-      </div>
-
-      <label class="switch">
-
-        <input
-          type="checkbox"
-          id="recitationSync"
-          checked
-        >
-
-        <span class="slider"></span>
-
-      </label>
-
-    </div>
-
-  </div>
-
-
-  <!-- WALLPAPER LIBRARY -->
-  <div class="environment-options">
-
-    <!-- FREE -->
-    <button
-      class="environment-option active"
-      data-environment="rain"
-    >
-      🌧️
-      <span>Rain</span>
-      <small>FREE</small>
-    </button>
-
-
-    <button
-      class="environment-option"
-      data-environment="birds"
-    >
-      🐦
-      <span>Birds</span>
-      <small>FREE</small>
-    </button>
-
-
-    <button
-      class="environment-option"
-      data-environment="morning"
-    >
-      🌅
-      <span>Morning Sky</span>
-      <small>FREE</small>
-    </button>
-
-
-    <!-- PREMIUM -->
-    <button
-      class="environment-option premium"
-      data-environment="forest"
-    >
-      🌲
-      <span>Forest Rain</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="waterfall"
-    >
-      💧
-      <span>Waterfall</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="mountains"
-    >
-      🏔️
-      <span>Mountains</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="night"
-    >
-      🌌
-      <span>Night Sky</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="thunder"
-    >
-      ⛈️
-      <span>Night Thunder</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="sahara"
-    >
-      🏜️
-      <span>Sahara</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="space"
-    >
-      🚀
-      <span>Space</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="fireplace"
-    >
-      🔥
-      <span>Fireplace</span>
-      <small>PREMIUM</small>
-    </button>
-
-
-    <button
-      class="environment-option premium"
-      data-environment="forest-fire"
-    >
-      🌲🔥
-      <span>Forest + Fire</span>
-      <small>PREMIUM</small>
-    </button>
-
-  </div>
-
-</section>
-    
-
-
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="bottom-nav">
-
-      <button class="nav-item active">
-        <span>📖</span>
-        <small>Reading</small>
       </button>
 
-      <button class="nav-item">
-        <span>🎧</span>
-        <small>Listen</small>
+
+
+      <button
+        class="nav-item"
+        data-tab="listen"
+      >
+
+        <span aria-hidden="true">
+          🎧
+        </span>
+
+        <small>
+          Listen
+        </small>
+
       </button>
 
-      <button class="nav-item">
-        <span>🔖</span>
-        <small>Bookmarks</small>
+
+
+      <button
+        class="nav-item"
+        data-tab="bookmarks"
+      >
+
+        <span aria-hidden="true">
+          🔖
+        </span>
+
+        <small>
+          Bookmarks
+        </small>
+
       </button>
 
-      <button class="nav-item">
-        <span>⚙️</span>
-        <small>Settings</small>
+
+
+      <button
+        class="nav-item"
+        data-tab="settings"
+      >
+
+        <span aria-hidden="true">
+          ⚙️
+        </span>
+
+        <small>
+          Settings
+        </small>
+
       </button>
 
     </nav>
@@ -550,30 +1009,54 @@
   </main>
 
 
-  <!-- TEXT SETTINGS PANEL -->
+
+  <!-- =====================================================
+       READING SETTINGS MODAL
+       ===================================================== -->
+
   <div
     class="modal hidden"
     id="textModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="readingSettingsTitle"
   >
 
     <div class="modal-content">
 
+
       <button
         class="modal-close"
         id="closeTextModal"
+        aria-label="Close reading settings"
       >
         ×
       </button>
 
-      <h2>Reading Settings</h2>
+
+      <p class="small-label">
+        READING
+      </p>
+
+
+      <h2 id="readingSettingsTitle">
+        Reading Settings
+      </h2>
+
 
       <p>
         Make the Qur'an text comfortable for your eyes.
       </p>
 
-      <label>
+
+      <!-- FONT -->
+
+      <label
+        for="arabicSizeSlider"
+      >
         Arabic text size
       </label>
+
 
       <input
         type="range"
@@ -583,17 +1066,71 @@
         value="100"
       >
 
-      <label>
+
+      <div
+        class="setting-value"
+        id="arabicSizeValue"
+      >
+        100%
+      </div>
+
+
+      <!-- BLUR -->
+
+      <label
+        for="blurSlider"
+      >
         Background blur
       </label>
+
 
       <input
         type="range"
         id="blurSlider"
         min="0"
         max="20"
-        value="8"
+        value="3"
       >
+
+
+      <div
+        class="setting-value"
+        id="blurValue"
+      >
+        3px
+      </div>
+
+
+      <!-- TRANSLITERATION -->
+
+      <div class="setting-row">
+
+        <div>
+
+          <strong>
+            Transliteration
+          </strong>
+
+          <small>
+            Show pronunciation help below the translation
+          </small>
+
+        </div>
+
+
+        <label class="switch">
+
+          <input
+            type="checkbox"
+            id="transliterationToggle"
+          >
+
+          <span class="slider"></span>
+
+        </label>
+
+      </div>
+
 
       <button
         class="primary-button"
@@ -607,34 +1144,60 @@
   </div>
 
 
-  <!-- RECITER MODAL -->
+
+  <!-- =====================================================
+       RECITER MODAL
+       ===================================================== -->
+
   <div
     class="modal hidden"
     id="reciterModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="reciterTitle"
   >
 
     <div class="modal-content">
 
+
       <button
         class="modal-close"
         id="closeReciterModal"
+        aria-label="Close reciter selection"
       >
         ×
       </button>
 
-      <h2>Choose Reciter</h2>
 
-      <button class="selection-button">
+      <p class="small-label">
+        RECITATION
+      </p>
+
+
+      <h2 id="reciterTitle">
+        Choose Reciter
+      </h2>
+
+
+      <button
+        class="selection-button"
+        data-reciter="Abdurrahman ibn Musad"
+      >
         Abdurrahman ibn Musad
       </button>
 
-      <button class="selection-button">
+
+      <button
+        class="selection-button"
+        data-reciter="Yasser Addosari"
+      >
         Yasser Addosari
       </button>
 
+
       <p class="notice">
-        Additional reciters will be added only when their audio
-        sources and permissions have been verified.
+        Additional reciters will be added only when their
+        audio sources and permissions have been verified.
       </p>
 
     </div>
@@ -642,7 +1205,250 @@
   </div>
 
 
+
+  <!-- =====================================================
+       THEME MODAL
+       ===================================================== -->
+
+  <div
+    class="modal hidden"
+    id="themeModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="themeTitle"
+  >
+
+    <div class="modal-content">
+
+
+      <button
+        class="modal-close"
+        id="closeThemeModal"
+        aria-label="Close theme selection"
+      >
+        ×
+      </button>
+
+
+      <p class="small-label">
+        APPEARANCE
+      </p>
+
+
+      <h2 id="themeTitle">
+        Choose Theme
+      </h2>
+
+
+      <button
+        class="selection-button theme-option active"
+        data-theme="night"
+      >
+
+        <span>
+          Night
+        </span>
+
+        <small>
+          Deep green · soft cream
+        </small>
+
+      </button>
+
+
+      <button
+        class="selection-button theme-option"
+        data-theme="bright"
+      >
+
+        <span>
+          Bright
+        </span>
+
+        <small>
+          Warm cream · natural green
+        </small>
+
+      </button>
+
+
+      <button
+        class="selection-button theme-option"
+        data-theme="warm"
+      >
+
+        <span>
+          Warm Ember
+        </span>
+
+        <small>
+          Candlelight · deep brown
+        </small>
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       AUDIO OPTIONS MODAL
+       ===================================================== -->
+
+  <div
+    class="modal hidden"
+    id="audioModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="audioOptionsTitle"
+  >
+
+    <div class="modal-content">
+
+
+      <button
+        class="modal-close"
+        id="closeAudioModal"
+        aria-label="Close audio options"
+      >
+        ×
+      </button>
+
+
+      <p class="small-label">
+        LISTENING
+      </p>
+
+
+      <h2 id="audioOptionsTitle">
+        Audio Options
+      </h2>
+
+
+      <button
+        class="selection-button"
+        id="changeReciterFromAudio"
+      >
+        Change Reciter
+      </button>
+
+
+      <div class="setting-row">
+
+        <div>
+
+          <strong>
+            Shuffle Ayahs
+          </strong>
+
+          <small>
+            Keep off for normal Qur'an order
+          </small>
+
+        </div>
+
+
+        <label class="switch">
+
+          <input
+            type="checkbox"
+            id="shuffleToggle"
+          >
+
+          <span class="slider"></span>
+
+        </label>
+
+      </div>
+
+
+      <button
+        class="primary-button"
+        id="closeAudioOptions"
+      >
+        Done
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       ENVIRONMENT MODAL
+       ===================================================== -->
+
+  <div
+    class="modal hidden"
+    id="environmentModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="environmentTitle"
+  >
+
+    <div class="modal-content">
+
+
+      <button
+        class="modal-close"
+        id="closeEnvironmentModal"
+        aria-label="Close environment selection"
+      >
+        ×
+      </button>
+
+
+      <p class="small-label">
+        LIVE WALLPAPER
+      </p>
+
+
+      <h2 id="environmentTitle">
+        Choose Environment
+      </h2>
+
+
+      <p>
+        Let the background create a calm atmosphere while
+        keeping the Qur'an at the center.
+      </p>
+
+
+      <button
+        class="primary-button"
+        id="closeEnvironmentSettings"
+      >
+        Done
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       APP STATUS
+       ===================================================== -->
+
+  <div
+    class="app-status"
+    id="appStatus"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+       ===================================================== -->
+
   <script src="app.js"></script>
 
 </body>
+
 </html>
