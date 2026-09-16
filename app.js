@@ -1221,7 +1221,54 @@ document
     }
   );
 
+/* =========================================================
+   MOTION SPEED
+   ========================================================= */
 
+const motionSpeedSlider =
+  document.getElementById("motionSpeedSlider");
+
+const motionSpeedLabel =
+  document.getElementById("motionSpeedLabel");
+
+if (motionSpeedSlider) {
+  motionSpeedSlider.addEventListener("input", event => {
+
+    state.motionSpeed =
+      Number(event.target.value);
+
+    if (motionSpeedLabel) {
+
+      const descriptions = {
+        0.9: "0.9× · Calm",
+        1.0: "1.0× · Natural",
+        1.1: "1.1× · Gentle"
+      };
+
+      motionSpeedLabel.textContent =
+        descriptions[state.motionSpeed] ||
+        `${state.motionSpeed}×`;
+    }
+  });
+}
+
+
+/* =========================================================
+   RECITATION SYNC
+   ========================================================= */
+
+const recitationSync =
+  document.getElementById("recitationSync");
+
+if (recitationSync) {
+
+  recitationSync.addEventListener("change", event => {
+
+    state.syncWithRecitation =
+      event.target.checked;
+
+  });
+}
 /* =========================================================
    PLAYBACK UI
    ========================================================= */
